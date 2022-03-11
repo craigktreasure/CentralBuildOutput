@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <GlobalPackageReference Include="Nerdbank.GitVersioning"                    Version="3.4.255"
+                            PrivateAssets="all"
+                            Condition=" '$(EnableGitVersioning)' != 'false' " />
+    <GlobalPackageReference Include="Microsoft.Build.Artifacts"                 Version="4.0.4"
+                            Condition="'$(EnableArtifacts)' != 'false'" />
+    <GlobalPackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="1.0.0"
+                            Condition="'$(EnableMicroBuild)' != 'false'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="IsExternalInit"                                   Version="1.0.2"
+                      IncludeAssets="runtime; build; native; contentfiles; analyzers"
+                      PrivateAssets="all" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk"                           Version="17.1.0" />
+    <PackageReference Update="MSBuild.ProjectCreation"                          Version="8.0.0-preview" />
+    <PackageReference Update="Shouldly"                                         Version="4.0.3" />
+    <PackageReference Update="xunit"                                            Version="2.4.1" />
+    <PackageReference Update="xunit.runner.visualstudio"                        Version="2.4.3"
+                      IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive"
+                      PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

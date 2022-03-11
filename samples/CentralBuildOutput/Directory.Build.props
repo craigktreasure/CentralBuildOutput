@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- Define the build output location. -->
+    <CentralBuildOutputPath>$(MSBuildThisFileDirectory)</CentralBuildOutputPath>
+
+    <!-- Adjust the relative path (eliminates the src folder in the build output tree). -->
+    <CentralBuildOutputRelativeToPath>$(MSBuildThisFileDirectory)/src</CentralBuildOutputRelativeToPath>
+  </PropertyGroup>
+
+  <!-- Import the CentralBuildOutput SDK. -->
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="0.1.0" />
+</Project>

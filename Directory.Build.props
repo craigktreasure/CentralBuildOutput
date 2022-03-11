@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <RepoRootPath>$(MSBuildThisFileDirectory)</RepoRootPath>
+    <SourceRootPath>$(MSBuildThisFileDirectory)/src</SourceRootPath>
+    <CentralBuildOutputPath>$(RepoRootPath)</CentralBuildOutputPath>
+    <CentralBuildOutputRelativeToPath>$(SourceRootPath)</CentralBuildOutputRelativeToPath>
+    <BaseArtifactsPath>$(MSBuildThisFileDirectory)__artifacts/</BaseArtifactsPath>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+    <None Include="Sdk\**"
+          Pack="true"
+          PackagePath="Sdk\" />
+    <None Include="README.md" />
+    <None Include="version.json" />
+  </ItemGroup>
+
+  <Import Project="$(RepoRootPath)/build/Defaults.props" />
+  <Import Project="$(SourceRootPath)/CentralBuildOutput/Sdk/Sdk.targets" />
+</Project>

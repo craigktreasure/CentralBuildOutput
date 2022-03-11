@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(CustomBeforeCentralBuildOutputProps)" Condition=" '$(CustomBeforeCentralBuildOutputProps)' != '' And Exists('$(CustomBeforeCentralBuildOutputProps)') " />
+
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
+    <UsingTreasureCentralBuildOutputSdk>true</UsingTreasureCentralBuildOutputSdk>
+  </PropertyGroup>
+
+  <Import Project="$(CustomAfterCentralBuildOutputProps)" Condition=" '$(CustomAfterCentralBuildOutputProps)' != '' And Exists('$(CustomAfterCentralBuildOutputProps)') " />
+</Project>
