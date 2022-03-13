@@ -57,9 +57,6 @@ jobs:
     needs: build
     environment:
       name: NuGet.org
-      url: https://www.nuget.org/packages/SlnUp/
-
-    if: ${{ !contains(needs.build.outputs.package_version, '-') }}
 
     steps:
       - name: Setup NuGet
