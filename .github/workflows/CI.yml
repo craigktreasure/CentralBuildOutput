@@ -1,0 +1,75 @@
+name: 'DotNetSDKs-CI'
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.config/**'
+      - '.github/dependabot.yml'
+      - '.vscode/**'
+
+env:
+  # Stop wasting time caching packages
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+  build:
+    name: 'Build dotnet-sdks'
+    runs-on: ubuntu-latest
+
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.x
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --configuration Release --no-build --verbosity normal
+
+      - name: Upload output artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: __output
+          path: __output
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: __packages
+          path: __packages
+
+  release_nuget:
+    name: 'Release dotnet-sdks to NuGet.org'
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: NuGet.org
+      url: https://www.nuget.org/packages/SlnUp/
+
+    if: ${{ !contains(needs.build.outputs.package_version, '-') }}
+
+    steps:
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1
+        with:
+          nuget-version: latest
+
+      - name: Download __packages
+        uses: actions/download-artifact@v2
+        with:
+          name: __packages
+          path: __packages
+
+      - name: Push Treasure.Build.CentralBuildOutput to NuGet.org
+        run: nuget push __packages/NuGet/Release/Treasure.Build.CentralBuildOutput.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json -SkipDuplicate
