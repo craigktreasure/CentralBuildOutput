@@ -17,4 +17,7 @@ internal static class StringExtensions
 
         return result;
     }
+
+    public static string ToPosixPath(this string path)
+        => path.Replace('\\', '/');
 }
