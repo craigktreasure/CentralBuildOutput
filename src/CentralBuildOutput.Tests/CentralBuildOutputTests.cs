@@ -32,9 +32,6 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
 
         // Assert
         Properties properties = Properties.Load(project);
-        this.TestOutput.WriteLine($"ProjectOutput: {this.ProjectOutput}");
-        this.TestOutput.WriteLine($"ProjectOutput exists: {Directory.Exists(this.ProjectOutput)}");
-        this.TestOutput.WriteLine(properties.ToString());
 
         CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
         cboProps.AppxPackageDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/AppPackages/");
