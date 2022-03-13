@@ -21,9 +21,21 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'ci skip')"
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - name: Setup .NET SDK
+      - name: Setup .NET 3.1.x SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+
+      - name: Setup .NET 5.x SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.x
+
+      - name: Setup .NET 6.x SDK
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.x
@@ -55,9 +67,6 @@ jobs:
     needs: build
     environment:
       name: NuGet.org
-      url: https://www.nuget.org/packages/SlnUp/
-
-    if: ${{ !contains(needs.build.outputs.package_version, '-') }}
 
     steps:
       - name: Setup NuGet
