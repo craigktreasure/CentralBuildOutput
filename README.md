@@ -5,6 +5,12 @@ were heavily inspired by the SDKs from [MSBuildSdks](https://github.com/microsof
 
 [![DotNetSDKs-CI](https://github.com/craigktreasure/dotnet-sdks/actions/workflows/CI.yml/badge.svg)](https://github.com/craigktreasure/dotnet-sdks/actions/workflows/CI.yml)
 
+- [.NET SDKs](#net-sdks)
+  - [What SDKs are available?](#what-sdks-are-available)
+    - [Treasure.Build.CentralBuildOutput](#treasurebuildcentralbuildoutput)
+  - [How can I use these SDKs?](#how-can-i-use-these-sdks)
+  - [What are MSBuild SDKS?](#what-are-msbuild-sdks)
+
 ## What SDKs are available?
 
 ### [Treasure.Build.CentralBuildOutput](./src/CentralBuildOutput/)
