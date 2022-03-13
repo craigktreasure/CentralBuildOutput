@@ -7,7 +7,7 @@
     <PackageType>MSBuildSdk</PackageType>
     <AssemblyName>Treasure.Build.CentralBuildOutput</AssemblyName>
     <RootNamespace>Treasure.Build.CentralBuildOutput</RootNamespace>
-    <PackageReadMe>README.md</PackageReadMe>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
