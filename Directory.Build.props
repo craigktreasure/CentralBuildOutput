@@ -18,5 +18,6 @@
   </ItemGroup>
 
   <Import Project="$(RepoRootPath)/build/Defaults.props" />
-  <Import Project="$(SourceRootPath)/CentralBuildOutput/Sdk/Sdk.targets" />
+
+  <Sdk Name="Treasure.Build.CentralBuildOutput" />
 </Project>
