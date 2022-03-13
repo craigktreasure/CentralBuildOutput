@@ -81,4 +81,4 @@ jobs:
           path: __packages
 
       - name: Push Treasure.Build.CentralBuildOutput to NuGet.org
-        run: nuget push __packages/NuGet/Release/Treasure.Build.CentralBuildOutput.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json -SkipDuplicate
+        run: nuget push __packages/NuGet/Release/Treasure.Build.CentralBuildOutput.*.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json -SkipDuplicate
