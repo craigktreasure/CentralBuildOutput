@@ -55,4 +55,6 @@ internal class TestProjectOutput : IDisposable
         Environment.CurrentDirectory = outputPath;
         return new TestProjectOutput(outputPath);
     }
+
+    public override string ToString() => this.OutputPath;
 }
