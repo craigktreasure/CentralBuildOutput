@@ -3,7 +3,7 @@
   <Import Project="Sdk.targets" Sdk="Microsoft.Build.CentralPackageVersions" />
 
   <PropertyGroup Condition="'$(IsTestProject)' != 'true'">
-    <ArtifactsPath>$(BaseArtifactsPath)/$(MSBuildProjectName)/$(Configuration)/</ArtifactsPath>
+    <ArtifactsPath>$(BaseArtifactsPath)/$(MSBuildProjectName)/</ArtifactsPath>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsTestProject)' == 'true'">
