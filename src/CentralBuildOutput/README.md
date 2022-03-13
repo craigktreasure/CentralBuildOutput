@@ -3,6 +3,10 @@
 [![NuGet](https://img.shields.io/nuget/v/Treasure.Build.CentralBuildOutput)](https://www.nuget.org/packages/Treasure.Build.CentralBuildOutput/)
 [![NuGet](https://img.shields.io/nuget/dt/Treasure.Build.CentralBuildOutput)](https://www.nuget.org/packages/Treasure.Build.CentralBuildOutput/)
 
+- [Treasure.Build.CentralBuildOutput](#treasurebuildcentralbuildoutput)
+  - [Centrally Managing Build Output](#centrally-managing-build-output)
+  - [Extensibility](#extensibility)
+
 The `Treasure.Build.CentralBuildOutput` MSBuild project SDK allows project tree owners to centralize their build
 output in one place. By default, build output is placed in the project folder in `bin` and `obj` folders. This SDK
 will cause all of the build output to be written to a common set of folders in a tree structure that mimics the project
@@ -99,7 +103,7 @@ This would result in the following build output:
 /__test-results/MyClassLibrary.Tests/*
 ```
 
-### Extensibility
+## Extensibility
 
 Setting the following properties controls how Central Build Output works.
 
