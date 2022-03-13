@@ -3,9 +3,14 @@
 The MSBuild project SDKs here are used to configure and extend your build. They
 were heavily inspired by the SDKs from [MSBuildSdks](https://github.com/microsoft/MSBuildSdks).
 
+[![DotNetSDKs-CI](https://github.com/craigktreasure/dotnet-sdks/actions/workflows/CI.yml/badge.svg)](https://github.com/craigktreasure/dotnet-sdks/actions/workflows/CI.yml)
+
 ## What SDKs are available?
 
 ### [Treasure.Build.CentralBuildOutput](./src/CentralBuildOutput/)
+
+[![NuGet](https://img.shields.io/nuget/v/Treasure.Build.CentralBuildOutput)](https://www.nuget.org/packages/Treasure.Build.CentralBuildOutput/)
+[![NuGet](https://img.shields.io/nuget/dt/Treasure.Build.CentralBuildOutput)](https://www.nuget.org/packages/Treasure.Build.CentralBuildOutput/)
 
 Automatically configure build output for .NET projects.
 
