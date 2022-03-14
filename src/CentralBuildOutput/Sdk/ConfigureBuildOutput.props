@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project InitialTargets="CheckCentralBuildOutputProperties" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    Verify that CentralBuildOutputPath was specified.
+  -->
+  <Target Name="CheckCentralBuildOutputProperties"
+          Condition=" '$(EnableCentralBuildOutput)' != 'false' And '$(DesignTimeBuild)' != 'true' ">
+
+    <!--
+      Log an error if CentralBuildOutputPath has not been set.
+    -->
+    <Error
+      Text="CentralBuildOutputPath must be set before importing $(MSBuildThisFile)."
+      Condition=" '$(CentralBuildOutputPath)' == '' " />
+  </Target>
+
+  <PropertyGroup Condition=" '$(EnableCentralBuildOutput)' != 'false' ">
+    <!-- Allow the user to override the folder prefix. Defaults to '__' -->
+    <CentralBuildOutputFolderPrefix Condition=" '$(CentralBuildOutputFolderPrefix)' == '' ">__</CentralBuildOutputFolderPrefix>
+
+    <RelativeProjectPath>$([MSBuild]::MakeRelative($(CentralBuildOutputPath), $(MSBuildProjectDirectory)))/</RelativeProjectPath>
+
+    <!--
+      Workaround for a bug in .NET Core 3.1's version of MSBuild.MakeRelative, which doesn't return the expected value
+      when the the paths are equal.
+    -->
+    <RelativeProjectPath Condition=" '$(MSBuildProjectDirectory)\' == '$(CentralBuildOutputPath)' "></RelativeProjectPath>
+
+    <!--
+      Allow the user to redefine the root folder used to calculate the relative output structure. For example, to remove
+      the 'src' folder from the output structure.
+    -->
+    <RelativeProjectPath Condition=" '$(CentralBuildOutputRelativeToPath)' != '' ">$([MSBuild]::MakeRelative($(CentralBuildOutputRelativeToPath), $(MSBuildProjectDirectory)))/</RelativeProjectPath>
+
+    <RelativeProjectPath Condition=" '$(RelativeProjectPath)' == './' "></RelativeProjectPath>
+
+    <!-- Force forward slashes for consistency. -->
+    <RelativeProjectPath>$(RelativeProjectPath.Replace('\', '/'))</RelativeProjectPath>
+
+    <!-- Set output root folders. -->
+    <BasePackagesDir>$(CentralBuildOutputPath)$(CentralBuildOutputFolderPrefix)packages/</BasePackagesDir>
+    <BaseNuGetDir>$(BasePackagesDir)NuGet/</BaseNuGetDir>
+    <BaseOutDir>$(CentralBuildOutputPath)$(CentralBuildOutputFolderPrefix)output/</BaseOutDir>
+    <BaseIntDir>$(CentralBuildOutputPath)$(CentralBuildOutputFolderPrefix)intermediate/</BaseIntDir>
+    <BasePublishDir>$(CentralBuildOutputPath)$(CentralBuildOutputFolderPrefix)publish/</BasePublishDir>
+    <BaseTestResultsDir>$(CentralBuildOutputPath)$(CentralBuildOutputFolderPrefix)test-results/</BaseTestResultsDir>
+
+    <!-- Configure NuGet output folder. -->
+    <PackageOutputPath>$(BaseNuGetDir)$(Configuration)/</PackageOutputPath>
+
+    <!--
+      Since we're moving the package output path, we need to inform Microsoft.Build.Artifacts where to pick up the
+      packages if it's being used.
+    -->
+    <DefaultArtifactsSource>$(PackageOutputPath)</DefaultArtifactsSource>
+
+    <!-- Configure project specific intermediate and output folders. -->
+    <ProjectOutputPath>$(BaseOutDir)$(Configuration)/$(Platform)/$(RelativeProjectPath)</ProjectOutputPath>
+
+    <!-- Configure Appx output path. -->
+    <AppxPackageDir>$(ProjectOutputPath)AppPackages/</AppxPackageDir>
+
+    <BaseProjectIntermediateOutputPath>$(BaseIntDir)$(RelativeProjectPath)</BaseProjectIntermediateOutputPath>
+    <BaseProjectPublishOutputPath>$(BasePublishDir)$(Configuration)/$(Platform)/$(RelativeProjectPath)</BaseProjectPublishOutputPath>
+    <BaseProjectTestResultsOutputPath>$(BaseTestResultsDir)$(RelativeProjectPath)</BaseProjectTestResultsOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(EnableCentralBuildOutput)' != 'false' And $(MSBuildProjectFile.EndsWith('.csproj')) ">
+    <ProjectIntermediateOutputPath>$(BaseProjectIntermediateOutputPath)</ProjectIntermediateOutputPath>
+
+    <BaseIntermediateOutputPath>$(ProjectIntermediateOutputPath)</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionPath>
+    <BaseOutputPath>$(ProjectOutputPath)</BaseOutputPath>
+    <OutputPath>$(ProjectOutputPath)</OutputPath>
+    <PublishDir>$(BaseProjectPublishOutputPath)</PublishDir>
+    <VSTestResultsDirectory>$(BaseProjectTestResultsOutputPath)</VSTestResultsDirectory>
+    <CoverletOutput>$(BaseProjectTestResultsOutputPath)</CoverletOutput>
+  </PropertyGroup>
+
+</Project>
