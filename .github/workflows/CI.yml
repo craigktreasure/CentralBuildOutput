@@ -8,6 +8,7 @@ on:
       - '.config/**'
       - '.github/dependabot.yml'
       - '.vscode/**'
+      - 'docs/**'
 
 env:
   # Stop wasting time caching packages
