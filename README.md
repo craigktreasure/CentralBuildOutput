@@ -1,41 +1,137 @@
-# .NET SDKs
-
-The MSBuild project SDKs here are used to configure and extend your build. They
-were heavily inspired by the SDKs from [MSBuildSdks](https://github.com/microsoft/MSBuildSdks).
+# Treasure.Build.CentralBuildOutput
 
 [![DotNetSDKs-CI](https://github.com/craigktreasure/dotnet-sdks/actions/workflows/CI.yml/badge.svg)](https://github.com/craigktreasure/dotnet-sdks/actions/workflows/CI.yml)
-
-- [.NET SDKs](#net-sdks)
-  - [What SDKs are available?](#what-sdks-are-available)
-    - [Treasure.Build.CentralBuildOutput](#treasurebuildcentralbuildoutput)
-  - [How can I use these SDKs?](#how-can-i-use-these-sdks)
-  - [What are MSBuild SDKS?](#what-are-msbuild-sdks)
-
-## What SDKs are available?
-
-### [Treasure.Build.CentralBuildOutput](./src/CentralBuildOutput/)
-
 [![NuGet](https://img.shields.io/nuget/v/Treasure.Build.CentralBuildOutput)](https://www.nuget.org/packages/Treasure.Build.CentralBuildOutput/)
 [![NuGet](https://img.shields.io/nuget/dt/Treasure.Build.CentralBuildOutput)](https://www.nuget.org/packages/Treasure.Build.CentralBuildOutput/)
 
-Automatically configure build output for .NET projects.
+- [Treasure.Build.CentralBuildOutput](#treasurebuildcentralbuildoutput)
+  - [Centrally Managing Build Output](#centrally-managing-build-output)
+  - [Extensibility](#extensibility)
+  - [Controlling SDK versions](#controlling-sdk-versions)
 
-## How can I use these SDKs?
+The `Treasure.Build.CentralBuildOutput` MSBuild project SDK allows project tree owners to centralize their build
+output in one place. By default, build output is placed in the project folder in `bin` and `obj` folders. This SDK
+will cause all of the build output to be written to a common set of folders in a tree structure that mimics the project
+structure.
 
-For detailed information, [read the documentation](https://docs.microsoft.com/visualstudio/msbuild/how-to-use-project-sdk).
+This project was heavily inspired by the project SDKs from [MSBuildSdks](https://github.com/microsoft/MSBuildSdks).
 
-When using an MSBuild Project SDK obtained via NuGet (such as the SDKs in this repo) a specific version **must** be
-specified.
+For more information about MSBuild project SDKs, see [here](https://docs.microsoft.com/visualstudio/msbuild/how-to-use-project-sdk).
 
-Either append the version to the package name:
+## Centrally Managing Build Output
+
+To get started, you will need to create a `Directory.Build.props` file at the root of your repository if you don't have
+one already. In that file, you'll need to declare a `CentralBuildOutputPath` property with the value set to the path of
+the location you want to write the build output. You'll then need to import the `Treasure.Build.CentralBuildOutput` SDK.
+
+Example `Directory.Build.props`:
 
 ```xml
-<Project Sdk="Treasure.Build.CentralBuildOutput/1.0.0">
-  ...
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- Define the build output location. -->
+    <CentralBuildOutputPath>$(MSBuildThisFileDirectory)</CentralBuildOutputPath>
+  </PropertyGroup>
+
+  <!-- Import the CentralBuildOutput SDK. -->
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="1.0.0" />
 </Project>
 ```
 
-Import in an MSBuild project file:
+> **Note:**
+>
+> The version number can be controlled in other ways. See [here](#controlling-sdk-versions).
+
+Build output folders written to the location defined by the `CentralBuildOutputPath` MSBuild property:
+
+| Folder Name    | Description                                            |
+| ---            | ---                                                    |
+| __intermediate | The intermediate build output.                         |
+| __output       | The build output.                                      |
+| __packages     | The output of packages.                                |
+| __publish      | The published output.                                  |
+| __test-results | The output of test results including Coverlet reports. |
+
+You can change the default prefix (`__`) by setting a new value to the `CentralBuildOutputFolderPrefix` MSBuild property.
+
+Underneath these build output folders will be a tree structure that matches the tree structure of your project folders.
+
+Consider the following project structure:
+
+```
+/Directory.Build.props
+/src/MyClassLibrary/MyClassLibrary.csproj
+/src/MyClassLibrary.Tests/MyClassLibrary.Tests.csproj
+```
+
+The relative path between the root of your repository and your project will be calculated. For the structure above, the
+relative path for **MyClassLibrary** is `src/MyClassLibrary`. A `Debug` build, publish, package, and test output would
+look like the following:
+
+```
+/__intermediate/src/MyClassLibrary/*
+/__intermediate/src/MyClassLibrary.Tests/*
+/__output/Debug/AnyCPU/src/MyClassLibrary/net6.0/*
+/__output/Debug/AnyCPU/src/MyClassLibrary.Tests/net6.0/*
+/__packages/NuGet/Debug/*
+/__publish/Debug/AnyCPU/src/MyClassLibrary/*
+/__test-results/src/MyClassLibrary.Tests/*
+```
+
+The relative path can be adjusted using the `CentralBuildOutputRelativeToPath` MSBuild property. For example:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- Define the build output location. -->
+    <CentralBuildOutputPath>$(MSBuildThisFileDirectory)</CentralBuildOutputPath>
+
+    <!-- Adjust the relative path (eliminates the src folder in the build output tree). -->
+    <CentralBuildOutputRelativeToPath>$(MSBuildThisFileDirectory)/src</CentralBuildOutputRelativeToPath>
+  </PropertyGroup>
+
+  <!-- Import the CentralBuildOutput SDK. -->
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="1.0.0" />
+</Project>
+```
+
+This would result in the following build output:
+
+```
+/__intermediate/MyClassLibrary/*
+/__intermediate/MyClassLibrary.Tests/*
+/__output/Debug/AnyCPU/MyClassLibrary/net6.0/*
+/__output/Debug/AnyCPU/MyClassLibrary.Tests/net6.0/*
+/__packages/NuGet/Debug/*
+/__publish/Debug/AnyCPU/MyClassLibrary/*
+/__test-results/MyClassLibrary.Tests/*
+```
+
+## Extensibility
+
+Setting the following properties controls how Central Build Output works.
+
+| Property                                | Description                                                                                          |
+| ---                                     | ---                                                                                                  |
+| `CentralBuildOutputPath` (Required)     | Defines the output path of the build output folders.                                                 |
+| `CentralBuildOutputFolderPrefix`        | Overrides the output folder prefix. Default is `__`.                                                 |
+| `CentralBuildOutputRelativeToPath`      | Redefines the root folder used to calculate the relative folder used in build output folders.        |
+| `CustomBeforeCentralBuildOutputProps`   | A list of custom MSBuild projects to import **before** central build output properties are declared. |
+| `CustomAfterCentralBuildOutputProps`    | A list of custom MSBuild projects to import **after** central build output properties are declared.  |
+| `CustomBeforeCentralBuildOutputTargets` | A list of custom MSBuild projects to import **before** central build output targets are declared.    |
+| `CustomAfterCentralBuildOutputTargets`  | A list of custom MSBuild projects to import **after** central build output targets are declared.     |
+| `EnableCentralBuildOutput`              | Indicates whether central build output is enabled or not. Set to `false` to disable.
+
+## Controlling SDK versions
+
+For more detailed information, see the [MSBuild documentation](https://docs.microsoft.com/visualstudio/msbuild/how-to-use-project-sdk).
+
+When using an MSBuild Project SDK obtained via NuGet (such as the SDK in this repo) a specific version **must** be
+specified.
+
+Specify the version number as an attribute of the SDK import:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -46,7 +142,7 @@ Import in an MSBuild project file:
 </Project>
 ```
 
-Or omit the version from the SDK attribute and specify it in the version in `global.json`, which can be useful to
+Or, omit the version from the SDK attribute and specify it in the version in `global.json`, which can be useful to
 synchronize versions across multiple projects in a solution:
 
 ```json
@@ -56,37 +152,4 @@ synchronize versions across multiple projects in a solution:
     "Treasure.Build.CentralBuildOutput" : "1.0.0"
   }
 }
-```
-
-Since MSBuild 15.6, SDKs are downloaded as NuGet packages automatically. Earlier versions of MSBuild 15 required SDKs to
-be installed.
-
-Again, for more information, [read the documentation](https://docs.microsoft.com/visualstudio/msbuild/how-to-use-project-sdk).
-
-## What are MSBuild SDKS?
-
-MSBuild 15.0 introduced new project XML for .NET Core that we refer to as SDK-style. These SDK-style projects looks like:
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
-  </PropertyGroup>
-</Project>
-```
-
-At evaluation time, MSBuild adds implicit imports at the top and bottom of the project like this:
-
-```xml
-<Project>
-    <!-- Implicit top import -->
-    <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
-
-    <PropertyGroup>
-        <TargetFramework>net46</TargetFramework>
-    </PropertyGroup>
-
-    <!-- Implicit bottom import -->
-    <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
-</Project>
 ```
