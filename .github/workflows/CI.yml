@@ -16,7 +16,7 @@ env:
 
 jobs:
   build:
-    name: 'Build dotnet-sdks'
+    name: 'Build CentralBuildOutput'
     runs-on: ubuntu-latest
 
     if: "!contains(github.event.head_commit.message, 'ci skip')"
@@ -69,7 +69,7 @@ jobs:
           path: __packages
 
   release_nuget:
-    name: 'Release dotnet-sdks to NuGet.org'
+    name: 'Release CentralBuildOutput to NuGet.org'
     runs-on: ubuntu-latest
     needs: build
     environment:

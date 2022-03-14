@@ -8,7 +8,7 @@ env:
 
 jobs:
   build:
-    name: 'Build dotnet-sdks'
+    name: 'Build CentralBuildOutput'
     strategy:
       max-parallel: 3
       fail-fast: false
