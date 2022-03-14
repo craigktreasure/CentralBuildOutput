@@ -25,8 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\CentralBuildOutput\Sdk\Sdk.props" Link="Sdk\Sdk.props" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="..\CentralBuildOutput\Sdk\Sdk.targets" Link="Sdk\Sdk.targets" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\CentralBuildOutput\Sdk\*" Link="Sdk\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

@@ -9,14 +9,6 @@
     <BaseArtifactsPath>$(MSBuildThisFileDirectory)__artifacts/</BaseArtifactsPath>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(IsPackable)' == 'true'">
-    <None Include="Sdk\**"
-          Pack="true"
-          PackagePath="Sdk\" />
-    <None Include="README.md" />
-    <None Include="version.json" />
-  </ItemGroup>
-
   <Import Project="$(RepoRootPath)/build/Defaults.props" />
 
   <Sdk Name="Treasure.Build.CentralBuildOutput" />
