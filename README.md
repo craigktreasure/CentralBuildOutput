@@ -1,6 +1,6 @@
 # Treasure.Build.CentralBuildOutput
 
-[![DotNetSDKs-CI](https://github.com/craigktreasure/dotnet-sdks/actions/workflows/CI.yml/badge.svg)](https://github.com/craigktreasure/dotnet-sdks/actions/workflows/CI.yml)
+[![DotNetSDKs-CI](https://github.com/craigktreasure/CentralBuildOutput/actions/workflows/CI.yml/badge.svg)](https://github.com/craigktreasure/CentralBuildOutput/actions/workflows/CI.yml)
 [![NuGet](https://img.shields.io/nuget/v/Treasure.Build.CentralBuildOutput)](https://www.nuget.org/packages/Treasure.Build.CentralBuildOutput/)
 [![NuGet](https://img.shields.io/nuget/dt/Treasure.Build.CentralBuildOutput)](https://www.nuget.org/packages/Treasure.Build.CentralBuildOutput/)
 
