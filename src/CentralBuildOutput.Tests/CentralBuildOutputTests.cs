@@ -14,6 +14,34 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
     }
 
     /// <summary>
+    /// Validates that the CentralBuildOutputPath must be set.
+    ///     Directory.Build.props
+    ///     Directory.Build.targets
+    ///     nuget.config
+    ///     src/MyClassLibrary/MyClassLibrary.csproj
+    /// </summary>
+    [Fact]
+    public void CentralBuildOutputPathMustBeSet()
+    {
+        // Arrange
+        this.SetupDirectoryBuildProps(centralBuidOutputPath: string.Empty);
+
+        // Act
+        ProjectCreator.Templates
+            .SdkCsproj(path: "src/MyClassLibrary/MyClassLibrary.csproj")
+            .Save()
+            .TryRestore(out bool restoreResult, out BuildOutput buildOutput);
+
+        // Assert
+        restoreResult.ShouldBeFalse();
+        buildOutput.Errors.Count.ShouldBe(1);
+        string buildError = buildOutput.Errors.ElementAt(0);
+        buildError.ShouldBeEquivalentTo("CentralBuildOutputPath must be set before importing the CentralBuildOutput project SDK.");
+
+        buildOutput.Dispose();
+    }
+
+    /// <summary>
     /// Validates a project in a project folder:
     ///     Directory.Build.props
     ///     Directory.Build.targets
