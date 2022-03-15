@@ -9,5 +9,5 @@
   </PropertyGroup>
 
   <!-- Import the CentralBuildOutput SDK. -->
-  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="0.1.1-beta.1" />
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="0.1.1-beta.3" />
 </Project>
