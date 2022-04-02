@@ -75,7 +75,7 @@
     <CentralBuildOutputConfiguration Condition=" '$(Configuration)' == '' ">Debug</CentralBuildOutputConfiguration>
     <CentralBuildOutputConfiguration Condition=" '$(Configuration)' != '' ">$(Configuration)</CentralBuildOutputConfiguration>
     <CentralBuildOutputConfigurationPath>$(CentralBuildOutputConfiguration)/</CentralBuildOutputConfigurationPath>
-    <CentralBuildOutputPlatform Condition=" '$(Platform)' == '' ">AnyCPU</CentralBuildOutputPlatform>
+    <CentralBuildOutputPlatform Condition=" '$(Platform)' == '' and '$(CentralBuildOutputNoDefaultPlatform)' != 'true' ">AnyCPU</CentralBuildOutputPlatform>
     <CentralBuildOutputPlatform Condition=" '$(Platform)' != '' ">$(Platform)</CentralBuildOutputPlatform>
     <CentralBuildOutputPlatformPath Condition=" '$(CentralBuildOutputPlatform)' != '' ">$(CentralBuildOutputPlatform)/</CentralBuildOutputPlatformPath>
     <CentralBuildOutputConfigurationPlatformPath>$(CentralBuildOutputConfigurationPath)$(CentralBuildOutputPlatformPath)</CentralBuildOutputConfigurationPlatformPath>

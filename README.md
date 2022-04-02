@@ -117,12 +117,13 @@ Setting the following properties controls how Central Build Output works.
 | ---                                     | ---                                                                                                  |
 | `CentralBuildOutputPath` (Required)     | Defines the output path of the build output folders.                                                 |
 | `CentralBuildOutputFolderPrefix`        | Overrides the output folder prefix. Default is `__`.                                                 |
+| `CentralBuildOutputNoDefaultPlatform`   | Omits the default platform name in the output path unless necessary if set to `true`.                |
 | `CentralBuildOutputRelativeToPath`      | Redefines the root folder used to calculate the relative folder used in build output folders.        |
 | `CustomBeforeCentralBuildOutputProps`   | A list of custom MSBuild projects to import **before** central build output properties are declared. |
 | `CustomAfterCentralBuildOutputProps`    | A list of custom MSBuild projects to import **after** central build output properties are declared.  |
 | `CustomBeforeCentralBuildOutputTargets` | A list of custom MSBuild projects to import **before** central build output targets are declared.    |
 | `CustomAfterCentralBuildOutputTargets`  | A list of custom MSBuild projects to import **after** central build output targets are declared.     |
-| `EnableCentralBuildOutput`              | Indicates whether central build output is enabled or not. Set to `false` to disable.
+| `EnableCentralBuildOutput`              | Indicates whether central build output is enabled or not. Set to `false` to disable.                 |
 
 ## Controlling SDK versions
 

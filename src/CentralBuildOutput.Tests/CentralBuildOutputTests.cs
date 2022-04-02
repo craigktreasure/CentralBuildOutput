@@ -140,6 +140,46 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
     }
 
     /// <summary>
+    /// Validates a project built with CentralBuildOutputNoDefaultPlatform set to `true`:
+    ///     Directory.Build.props
+    ///     Directory.Build.targets
+    ///     nuget.config
+    ///     src/MyClassLibrary/MyClassLibrary.csproj
+    /// </summary>
+    [Fact]
+    public void NoDefaultPlatform()
+    {
+        // Arrange
+        this.SetupDirectoryBuildProps(
+            projectFunction: p => p.Property("CentralBuildOutputNoDefaultPlatform", "true"));
+
+        // Act
+        ProjectCreator project = this.CreateSaveAndBuildProject(() => ProjectCreator.Templates
+            .SdkCsproj(path: "src/MyClassLibrary/MyClassLibrary.csproj"));
+
+        // Assert
+        Properties properties = Properties.Load(project);
+
+        CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
+        cboProps.AppxPackageDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/src/MyClassLibrary/AppPackages/");
+        cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/src/MyClassLibrary/");
+        cboProps.ProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/src/MyClassLibrary/");
+
+        CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
+        msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/src/MyClassLibrary/");
+        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
+        // depending on the OS. This is the reason for the ToPosixPath in this case.
+        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+            .ShouldBe("__output/Debug/src/MyClassLibrary/netstandard2.0/");
+
+        CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
+        msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/src/MyClassLibrary/");
+
+        File.Exists("__output/Debug/src/MyClassLibrary/netstandard2.0/MyClassLibrary.dll").ShouldBeTrue();
+        Directory.Exists("__intermediate/src/MyClassLibrary/Debug/netstandard2.0").ShouldBeTrue();
+    }
+
+    /// <summary>
     /// Validates a project in a project folder, but with CentralBuildOutputFolderPrefix set to "_prefix_":
     ///     Directory.Build.props
     ///     Directory.Build.targets
