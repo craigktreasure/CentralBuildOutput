@@ -12,9 +12,7 @@ internal static class ProjectCreatorTemplatesExtensions
         Action<ProjectCreator>? projectFunction = null)
     {
         ProjectCreator result = ProjectCreator.Create()
-            .Property("CentralBuildOutputPath", centralBuidOutputPath)
-            .Property("Configuration", "Debug", setIfEmpty: true)
-            .Property("Platform", "AnyCPU", setIfEmpty: true);
+            .Property("CentralBuildOutputPath", centralBuidOutputPath);
 
         if (projectFunction is not null)
         {
