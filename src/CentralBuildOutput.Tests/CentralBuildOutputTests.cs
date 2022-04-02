@@ -289,6 +289,45 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         Directory.Exists("__intermediate/MyClassLibrary/Debug/netstandard2.0").ShouldBeTrue();
     }
 
+    /// <summary>
+    /// Validates a traversal project:
+    ///     Directory.Build.props
+    ///     Directory.Build.targets
+    ///     nuget.config
+    ///     dirs.proj
+    /// </summary>
+    [Fact]
+    public void TraversalProject()
+    {
+        // Arrange
+        this.SetupDirectoryBuildProps();
+
+        // Act
+        ProjectCreator project = this.CreateSaveAndBuildProject(() => ProjectCreator.Create(
+            path: "dirs.proj",
+            sdk: "Microsoft.Build.Traversal/3.1.6"));
+
+        // Assert
+        Properties properties = Properties.Load(project);
+
+        CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
+        cboProps.RelativeProjectPath.ShouldBe("dirs/");
+
+        CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
+        msbuildProps.BaseIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/dirs/");
+
+        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
+        // depending on the OS. This is the reason for the ToPosixPath in this case.
+        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+            .ShouldBe("__output/Debug/AnyCPU/dirs/net45/");
+
+        MSBuildOtherProperties msBuildOtherProps = properties.MSBuildOther;
+        msBuildOtherProps.MSBuildProjectExtensionPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/dirs/");
+
+        Directory.Exists("obj").ShouldBeFalse();
+        Directory.Exists("__intermediate/dirs").ShouldBeTrue();
+    }
+
     private ProjectCreator CreateSaveAndBuildProject(Func<ProjectCreator> projectFunction)
     {
         ProjectCreator projectCreator = projectFunction()

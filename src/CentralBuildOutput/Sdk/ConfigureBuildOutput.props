@@ -19,6 +19,21 @@
     <CentralBuildOutputEnabledAndReady Condition=" '$(EnableCentralBuildOutput)' != 'false' And '$(CentralBuildOutputPath)' != '' ">true</CentralBuildOutputEnabledAndReady>
   </PropertyGroup>
 
+  <!--
+    When using Microsoft.Build.Traversal (https://github.com/microsoft/MSBuildSdks/tree/main/src/Traversal),
+    it is unlikely that their props will be imported in time for us to reference their properties. So, we need to
+    configure a few of their properties beforehand here. These properties are copied from their props file in order
+    for us to be able to properly influence the output of a Traversal project.
+  -->
+  <PropertyGroup Condition=" '$(UsingMicrosoftTraversalSdk)' == 'true' ">
+    <!--
+      A list of project names that are considered traversal projects.  Add to this list if you name your projects something other than "dirs.proj"
+    -->
+    <TraversalProjectNames Condition=" '$(TraversalProjectNames)' == '' ">dirs.proj</TraversalProjectNames>
+
+    <IsTraversal Condition=" '$(IsTraversal)' == '' And $(TraversalProjectNames.IndexOf($(MSBuildProjectFile), System.StringComparison.OrdinalIgnoreCase)) >= 0 ">true</IsTraversal>
+  </PropertyGroup>
+
   <PropertyGroup Condition=" '$(CentralBuildOutputEnabledAndReady)' == 'true' ">
     <!-- Allow the user to override the folder prefix. Defaults to '__' -->
     <CentralBuildOutputFolderPrefix Condition=" '$(CentralBuildOutputFolderPrefix)' == '' ">__</CentralBuildOutputFolderPrefix>
@@ -30,6 +45,12 @@
       when the the paths are equal.
     -->
     <RelativeProjectPath Condition=" '$(MSBuildProjectDirectory)\' == '$(CentralBuildOutputPath)' "></RelativeProjectPath>
+
+    <!--
+      Traversal projects are generally not placed inside a project folder of their own. So, we append the project name
+      to cause their output to be contained to a folder.
+     -->
+    <RelativeProjectPath Condition=" '$(IsTraversal)' == 'true' ">$(RelativeProjectPath)$(MSBuildProjectName)/</RelativeProjectPath>
 
     <!--
       Allow the user to redefine the root folder used to calculate the relative output structure. For example, to remove
@@ -70,7 +91,16 @@
     <BaseProjectTestResultsOutputPath>$(BaseTestResultsDir)$(RelativeProjectPath)</BaseProjectTestResultsOutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" $(MSBuildProjectFile.EndsWith('.csproj')) And '$(CentralBuildOutputEnabledAndReady)' == 'true' ">
+  <PropertyGroup Condition=" '$(CentralBuildOutputEnabledAndReady)' == 'true' ">
+    <CentralBuildOutputDotNetStyleProject Condition=" $(MSBuildProjectFile.EndsWith('.csproj')) ">true</CentralBuildOutputDotNetStyleProject>
+
+    <CentralBuildOutputTraversalProject Condition=" '$(IsTraversal)' == 'true' ">true</CentralBuildOutputTraversalProject>
+  </PropertyGroup>
+
+  <!--
+    Configure .NET style project output.
+  -->
+  <PropertyGroup Condition=" '$(CentralBuildOutputDotNetStyleProject)' == 'true' ">
     <ProjectIntermediateOutputPath>$(BaseProjectIntermediateOutputPath)</ProjectIntermediateOutputPath>
 
     <BaseIntermediateOutputPath>$(ProjectIntermediateOutputPath)</BaseIntermediateOutputPath>
@@ -80,6 +110,15 @@
     <PublishDir>$(BaseProjectPublishOutputPath)</PublishDir>
     <VSTestResultsDirectory>$(BaseProjectTestResultsOutputPath)</VSTestResultsDirectory>
     <CoverletOutput>$(BaseProjectTestResultsOutputPath)</CoverletOutput>
+  </PropertyGroup>
+
+  <!--
+    Configure Traversal project output.
+  -->
+  <PropertyGroup Condition=" '$(CentralBuildOutputTraversalProject)' == 'true' ">
+    <BaseIntermediateOutputPath>$(BaseProjectIntermediateOutputPath)</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionPath>$(BaseProjectIntermediateOutputPath)</MSBuildProjectExtensionPath>
+    <OutputPath>$(ProjectOutputPath)</OutputPath>
   </PropertyGroup>
 
 </Project>
