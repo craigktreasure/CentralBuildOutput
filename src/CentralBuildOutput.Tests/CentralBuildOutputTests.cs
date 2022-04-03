@@ -140,6 +140,46 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
     }
 
     /// <summary>
+    /// Validates a project built with CentralBuildOutputNoDefaultPlatform set to `true`:
+    ///     Directory.Build.props
+    ///     Directory.Build.targets
+    ///     nuget.config
+    ///     src/MyClassLibrary/MyClassLibrary.csproj
+    /// </summary>
+    [Fact]
+    public void NoDefaultPlatform()
+    {
+        // Arrange
+        this.SetupDirectoryBuildProps(
+            projectFunction: p => p.Property("CentralBuildOutputNoDefaultPlatform", "true"));
+
+        // Act
+        ProjectCreator project = this.CreateSaveAndBuildProject(() => ProjectCreator.Templates
+            .SdkCsproj(path: "src/MyClassLibrary/MyClassLibrary.csproj"));
+
+        // Assert
+        Properties properties = Properties.Load(project);
+
+        CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
+        cboProps.AppxPackageDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/src/MyClassLibrary/AppPackages/");
+        cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/src/MyClassLibrary/");
+        cboProps.ProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/src/MyClassLibrary/");
+
+        CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
+        msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/src/MyClassLibrary/");
+        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
+        // depending on the OS. This is the reason for the ToPosixPath in this case.
+        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+            .ShouldBe("__output/Debug/src/MyClassLibrary/netstandard2.0/");
+
+        CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
+        msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/src/MyClassLibrary/");
+
+        File.Exists("__output/Debug/src/MyClassLibrary/netstandard2.0/MyClassLibrary.dll").ShouldBeTrue();
+        Directory.Exists("__intermediate/src/MyClassLibrary/Debug/netstandard2.0").ShouldBeTrue();
+    }
+
+    /// <summary>
     /// Validates a project in a project folder, but with CentralBuildOutputFolderPrefix set to "_prefix_":
     ///     Directory.Build.props
     ///     Directory.Build.targets
@@ -326,6 +366,164 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
 
         Directory.Exists("obj").ShouldBeFalse();
         Directory.Exists("__intermediate/dirs").ShouldBeTrue();
+    }
+
+    /// <summary>
+    /// Validates a project built for a Debug build configuration:
+    ///     Directory.Build.props
+    ///     Directory.Build.targets
+    ///     nuget.config
+    ///     src/MyClassLibrary/MyClassLibrary.csproj
+    /// </summary>
+    [Fact]
+    public void WithBuildConfigurationDebug()
+    {
+        // Arrange
+        this.SetupDirectoryBuildProps();
+
+        // Act
+        ProjectCreator project = this.CreateSaveAndBuildProject(() => ProjectCreator.Templates
+            .SdkCsproj(path: "src/MyClassLibrary/MyClassLibrary.csproj", globalProperties: new Dictionary<string, string>()
+            {
+                ["Configuration"] = "Debug"
+            }));
+
+        // Assert
+        Properties properties = Properties.Load(project);
+
+        CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
+        msbuildProps.Configuration.ShouldBe("Debug");
+        msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/");
+        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
+        // depending on the OS. This is the reason for the ToPosixPath in this case.
+        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+            .ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/netstandard2.0/");
+
+        CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
+        cboProps.AppxPackageDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/AppPackages/");
+        cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/");
+        cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
+        cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
+        cboProps.ProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/");
+
+        CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
+        msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/");
+
+        File.Exists("__output/Debug/AnyCPU/src/MyClassLibrary/netstandard2.0/MyClassLibrary.dll").ShouldBeTrue();
+        Directory.Exists("__intermediate/src/MyClassLibrary/Debug/netstandard2.0").ShouldBeTrue();
+    }
+
+    /// <summary>
+    /// Validates a project built for a Release build configuration:
+    ///     Directory.Build.props
+    ///     Directory.Build.targets
+    ///     nuget.config
+    ///     src/MyClassLibrary/MyClassLibrary.csproj
+    /// </summary>
+    [Fact]
+    public void WithBuildConfigurationRelease()
+    {
+        // Arrange
+        this.SetupDirectoryBuildProps();
+
+        // Act
+        ProjectCreator project = this.CreateSaveAndBuildProject(() => ProjectCreator.Templates
+            .SdkCsproj(path: "src/MyClassLibrary/MyClassLibrary.csproj", globalProperties: new Dictionary<string, string>()
+            {
+                ["Configuration"] = "Release"
+            }));
+
+        // Assert
+        Properties properties = Properties.Load(project);
+
+        CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
+        msbuildProps.Configuration.ShouldBe("Release");
+        msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Release/AnyCPU/src/MyClassLibrary/");
+        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
+        // depending on the OS. This is the reason for the ToPosixPath in this case.
+        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+            .ShouldBe("__output/Release/AnyCPU/src/MyClassLibrary/netstandard2.0/");
+
+        CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
+        cboProps.AppxPackageDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/Release/AnyCPU/src/MyClassLibrary/AppPackages/");
+        cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Release/AnyCPU/src/MyClassLibrary/");
+        cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Release/");
+        cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Release/");
+        cboProps.ProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Release/AnyCPU/src/MyClassLibrary/");
+
+        CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
+        msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Release/AnyCPU/src/MyClassLibrary/");
+
+        File.Exists("__output/Release/AnyCPU/src/MyClassLibrary/netstandard2.0/MyClassLibrary.dll").ShouldBeTrue();
+        Directory.Exists("__intermediate/src/MyClassLibrary/Release/netstandard2.0").ShouldBeTrue();
+    }
+
+    /// <summary>
+    /// Validates a project built specifying a build Platform of x64:
+    ///     Directory.Build.props
+    ///     Directory.Build.targets
+    ///     nuget.config
+    ///     src/MyClassLibrary/MyClassLibrary.csproj
+    /// </summary>
+    [Fact]
+    public void WithPlatformX64()
+    {
+        // Arrange
+        this.SetupDirectoryBuildProps();
+
+        // Act
+        ProjectCreator project = this.CreateSaveAndBuildProject(() => ProjectCreator.Templates
+            .SdkCsproj(path: "src/MyClassLibrary/MyClassLibrary.csproj", globalProperties: new Dictionary<string, string>()
+            {
+                ["Platform"] = "x64"
+            }));
+
+        // Assert
+        Properties properties = Properties.Load(project);
+
+        CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
+        cboProps.AppxPackageDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/x64/src/MyClassLibrary/AppPackages/");
+        cboProps.BaseIntDir.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/");
+        cboProps.BaseNuGetDir.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/");
+        cboProps.BaseOutDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/");
+        cboProps.BasePackagesDir.MakeRelative(this.ProjectOutput).ShouldBe("__packages/");
+        cboProps.BaseProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+        cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/x64/src/MyClassLibrary/");
+        cboProps.BaseProjectTestResultsOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
+        cboProps.BasePublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/");
+        cboProps.BaseTestResultsDir.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
+        cboProps.CentralBuildOutputFolderPrefix.MakeRelative(this.ProjectOutput).ShouldBe("__");
+        cboProps.CentralBuildOutputPath.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
+        cboProps.EnableCentralBuildOutput.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
+        cboProps.ProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+        cboProps.ProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/x64/src/MyClassLibrary/");
+        cboProps.RelativeProjectPath.MakeRelative(this.ProjectOutput).ShouldBe("src/MyClassLibrary/");
+
+        CoverletProperties coverletProps = properties.Coverlet;
+        coverletProps.CoverletOutput.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
+
+        CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
+        msbuildProps.BaseIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+        msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/x64/src/MyClassLibrary/");
+
+        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
+        // depending on the OS. This is the reason for the ToPosixPath in this case.
+        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+            .ShouldBe("__output/Debug/x64/src/MyClassLibrary/netstandard2.0/");
+
+        CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
+        msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/x64/src/MyClassLibrary/");
+
+        MSBuildOtherProperties msBuildOtherProps = properties.MSBuildOther;
+        msBuildOtherProps.MSBuildProjectExtensionPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+
+        VSTestProperties vsTestProps = properties.VSTest;
+        vsTestProps.VSTestResultsDirectory.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
+
+        File.Exists("__output/Debug/x64/src/MyClassLibrary/netstandard2.0/MyClassLibrary.dll").ShouldBeTrue();
+        Directory.Exists("__intermediate/src/MyClassLibrary/x64/Debug/netstandard2.0").ShouldBeTrue();
     }
 
     private ProjectCreator CreateSaveAndBuildProject(Func<ProjectCreator> projectFunction)

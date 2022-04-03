@@ -71,8 +71,17 @@
     <BasePublishDir>$(CentralBuildOutputPath)$(CentralBuildOutputFolderPrefix)publish/</BasePublishDir>
     <BaseTestResultsDir>$(CentralBuildOutputPath)$(CentralBuildOutputFolderPrefix)test-results/</BaseTestResultsDir>
 
+    <!-- Configure configuration and platform paths. -->
+    <CentralBuildOutputConfiguration Condition=" '$(Configuration)' == '' ">Debug</CentralBuildOutputConfiguration>
+    <CentralBuildOutputConfiguration Condition=" '$(Configuration)' != '' ">$(Configuration)</CentralBuildOutputConfiguration>
+    <CentralBuildOutputConfigurationPath>$(CentralBuildOutputConfiguration)/</CentralBuildOutputConfigurationPath>
+    <CentralBuildOutputPlatform Condition=" '$(Platform)' == '' and '$(CentralBuildOutputNoDefaultPlatform)' != 'true' ">AnyCPU</CentralBuildOutputPlatform>
+    <CentralBuildOutputPlatform Condition=" '$(Platform)' != '' ">$(Platform)</CentralBuildOutputPlatform>
+    <CentralBuildOutputPlatformPath Condition=" '$(CentralBuildOutputPlatform)' != '' ">$(CentralBuildOutputPlatform)/</CentralBuildOutputPlatformPath>
+    <CentralBuildOutputConfigurationPlatformPath>$(CentralBuildOutputConfigurationPath)$(CentralBuildOutputPlatformPath)</CentralBuildOutputConfigurationPlatformPath>
+
     <!-- Configure NuGet output folder. -->
-    <PackageOutputPath>$(BaseNuGetDir)$(Configuration)/</PackageOutputPath>
+    <PackageOutputPath>$(BaseNuGetDir)$(CentralBuildOutputConfigurationPath)</PackageOutputPath>
 
     <!--
       Since we're moving the package output path, we need to inform Microsoft.Build.Artifacts where to pick up the
@@ -81,13 +90,13 @@
     <DefaultArtifactsSource>$(PackageOutputPath)</DefaultArtifactsSource>
 
     <!-- Configure project specific intermediate and output folders. -->
-    <ProjectOutputPath>$(BaseOutDir)$(Configuration)/$(Platform)/$(RelativeProjectPath)</ProjectOutputPath>
+    <ProjectOutputPath>$(BaseOutDir)$(CentralBuildOutputConfigurationPlatformPath)$(RelativeProjectPath)</ProjectOutputPath>
 
     <!-- Configure Appx output path. -->
     <AppxPackageDir>$(ProjectOutputPath)AppPackages/</AppxPackageDir>
 
     <BaseProjectIntermediateOutputPath>$(BaseIntDir)$(RelativeProjectPath)</BaseProjectIntermediateOutputPath>
-    <BaseProjectPublishOutputPath>$(BasePublishDir)$(Configuration)/$(Platform)/$(RelativeProjectPath)</BaseProjectPublishOutputPath>
+    <BaseProjectPublishOutputPath>$(BasePublishDir)$(CentralBuildOutputConfigurationPlatformPath)$(RelativeProjectPath)</BaseProjectPublishOutputPath>
     <BaseProjectTestResultsOutputPath>$(BaseTestResultsDir)$(RelativeProjectPath)</BaseProjectTestResultsOutputPath>
   </PropertyGroup>
 
