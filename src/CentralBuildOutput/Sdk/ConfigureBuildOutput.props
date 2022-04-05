@@ -38,6 +38,9 @@
     <!-- Allow the user to override the folder prefix. Defaults to '__' -->
     <CentralBuildOutputFolderPrefix Condition=" '$(CentralBuildOutputFolderPrefix)' == '' ">__</CentralBuildOutputFolderPrefix>
 
+    <!-- Ensure that CentralBuildOutputPath ends with a trailing slash. -->
+    <CentralBuildOutputPath>$([MSBuild]::EnsureTrailingSlash('$(CentralBuildOutputPath)'))</CentralBuildOutputPath>
+
     <RelativeProjectPath>$([MSBuild]::MakeRelative($(CentralBuildOutputPath), $(MSBuildProjectDirectory)))/</RelativeProjectPath>
 
     <!--
