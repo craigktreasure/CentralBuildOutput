@@ -14,6 +14,31 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
     }
 
     /// <summary>
+    /// Validates a project with CentralBuildOutput missing a trailing slash:
+    ///     Directory.Build.props
+    ///     Directory.Build.targets
+    ///     nuget.config
+    ///     src/MyClassLibrary/MyClassLibrary.csproj
+    /// </summary>
+    [Fact]
+    public void CentralBuildOutputMissingTrailingSlash()
+    {
+        // Arrange
+        this.SetupDirectoryBuildProps("$(MSBuildThisFileDirectory.TrimEnd('/').TrimEnd('\\'))");
+
+        // Act
+        ProjectCreator project = this.CreateSaveAndBuildProject(() => ProjectCreator.Templates
+            .SdkCsproj(path: "src/MyClassLibrary/MyClassLibrary.csproj"));
+
+        // Assert
+        Properties properties = Properties.Load(project);
+
+        CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
+        cboProps.CentralBuildOutputPath.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.CentralBuildOutputPath.ShouldEndWith(Path.DirectorySeparatorChar.ToString());
+    }
+
+    /// <summary>
     /// Validates that the CentralBuildOutputPath must be set.
     ///     Directory.Build.props
     ///     Directory.Build.targets
