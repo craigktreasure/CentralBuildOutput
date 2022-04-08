@@ -116,6 +116,7 @@ Setting the following properties controls how Central Build Output works.
 | Property                                | Description                                                                                          |
 | ---                                     | ---                                                                                                  |
 | `CentralBuildOutputPath` (Required)     | Defines the output path of the build output folders.                                                 |
+| `CentralBuildOutputConfigPlatLast`      | Places the configuration and platform at the end of the path if set to `true`.                       |
 | `CentralBuildOutputFolderPrefix`        | Overrides the output folder prefix. Default is `__`.                                                 |
 | `CentralBuildOutputNoDefaultPlatform`   | Omits the default platform name in the output path unless necessary if set to `true`.                |
 | `CentralBuildOutputRelativeToPath`      | Redefines the root folder used to calculate the relative folder used in build output folders.        |

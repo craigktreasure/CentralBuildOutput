@@ -35,6 +35,11 @@ internal class CentralBuildOutputProperties
     public string BaseProjectIntermediateOutputPath { get; init; } = string.Empty;
 
     /// <summary>
+    /// The base project output path.
+    /// </summary>
+    public string BaseProjectOutputPath { get; init; } = string.Empty;
+
+    /// <summary>
     /// The base project publish output path.
     /// </summary>
     public string BaseProjectPublishOutputPath { get; init; } = string.Empty;
@@ -106,6 +111,7 @@ internal class CentralBuildOutputProperties
         creator.TryGetPropertyValue(nameof(BaseOutDir), out string baseOutDir);
         creator.TryGetPropertyValue(nameof(BasePackagesDir), out string basePackagesDir);
         creator.TryGetPropertyValue(nameof(BaseProjectIntermediateOutputPath), out string baseProjectIntermediateOutputPath);
+        creator.TryGetPropertyValue(nameof(BaseProjectOutputPath), out string baseProjectOutputPath);
         creator.TryGetPropertyValue(nameof(BaseProjectPublishOutputPath), out string baseProjectPublishOutputPath);
         creator.TryGetPropertyValue(nameof(BaseProjectTestResultsOutputPath), out string baseProjectTestResultsOutputPath);
         creator.TryGetPropertyValue(nameof(BasePublishDir), out string basePublishDir);
@@ -127,6 +133,7 @@ internal class CentralBuildOutputProperties
             BaseOutDir = baseOutDir,
             BasePackagesDir = basePackagesDir,
             BaseProjectIntermediateOutputPath = baseProjectIntermediateOutputPath,
+            BaseProjectOutputPath = baseProjectOutputPath,
             BaseProjectPublishOutputPath = baseProjectPublishOutputPath,
             BaseProjectTestResultsOutputPath = baseProjectTestResultsOutputPath,
             BasePublishDir = basePublishDir,

@@ -92,15 +92,19 @@
     -->
     <DefaultArtifactsSource>$(PackageOutputPath)</DefaultArtifactsSource>
 
-    <!-- Configure project specific intermediate and output folders. -->
-    <ProjectOutputPath>$(BaseOutDir)$(CentralBuildOutputConfigurationPlatformPath)$(RelativeProjectPath)</ProjectOutputPath>
+    <!--
+      Configure project specific intermediate and output folders.
+      CentralBuildOutputConfigPlatLast allows users to move the configuration\platform to the end of the path.
+    -->
+    <ProjectOutputPath Condition=" '$(CentralBuildOutputConfigPlatLast)' != 'true' ">$(CentralBuildOutputConfigurationPlatformPath)$(RelativeProjectPath)</ProjectOutputPath>
+    <ProjectOutputPath Condition=" '$(CentralBuildOutputConfigPlatLast)' == 'true' ">$(RelativeProjectPath)$(CentralBuildOutputConfigurationPlatformPath)</ProjectOutputPath>
+    <BaseProjectOutputPath>$(BaseOutDir)$(ProjectOutputPath)</BaseProjectOutputPath>
+    <BaseProjectIntermediateOutputPath>$(BaseIntDir)$(RelativeProjectPath)</BaseProjectIntermediateOutputPath>
+    <BaseProjectPublishOutputPath>$(BasePublishDir)$(ProjectOutputPath)</BaseProjectPublishOutputPath>
+    <BaseProjectTestResultsOutputPath>$(BaseTestResultsDir)$(RelativeProjectPath)</BaseProjectTestResultsOutputPath>
 
     <!-- Configure Appx output path. -->
-    <AppxPackageDir>$(ProjectOutputPath)AppPackages/</AppxPackageDir>
-
-    <BaseProjectIntermediateOutputPath>$(BaseIntDir)$(RelativeProjectPath)</BaseProjectIntermediateOutputPath>
-    <BaseProjectPublishOutputPath>$(BasePublishDir)$(CentralBuildOutputConfigurationPlatformPath)$(RelativeProjectPath)</BaseProjectPublishOutputPath>
-    <BaseProjectTestResultsOutputPath>$(BaseTestResultsDir)$(RelativeProjectPath)</BaseProjectTestResultsOutputPath>
+    <AppxPackageDir>$(BaseProjectOutputPath)AppPackages/</AppxPackageDir>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(CentralBuildOutputEnabledAndReady)' == 'true' ">
@@ -117,8 +121,8 @@
 
     <BaseIntermediateOutputPath>$(ProjectIntermediateOutputPath)</BaseIntermediateOutputPath>
     <MSBuildProjectExtensionPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionPath>
-    <BaseOutputPath>$(ProjectOutputPath)</BaseOutputPath>
-    <OutputPath>$(ProjectOutputPath)</OutputPath>
+    <BaseOutputPath>$(BaseProjectOutputPath)</BaseOutputPath>
+    <OutputPath>$(BaseProjectOutputPath)</OutputPath>
     <PublishDir>$(BaseProjectPublishOutputPath)</PublishDir>
     <VSTestResultsDirectory>$(BaseProjectTestResultsOutputPath)</VSTestResultsDirectory>
     <CoverletOutput>$(BaseProjectTestResultsOutputPath)</CoverletOutput>
@@ -130,7 +134,7 @@
   <PropertyGroup Condition=" '$(CentralBuildOutputTraversalProject)' == 'true' ">
     <BaseIntermediateOutputPath>$(BaseProjectIntermediateOutputPath)</BaseIntermediateOutputPath>
     <MSBuildProjectExtensionPath>$(BaseProjectIntermediateOutputPath)</MSBuildProjectExtensionPath>
-    <OutputPath>$(ProjectOutputPath)</OutputPath>
+    <OutputPath>$(BaseProjectOutputPath)</OutputPath>
   </PropertyGroup>
 
 </Project>

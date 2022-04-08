@@ -67,6 +67,73 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
     }
 
     /// <summary>
+    /// Validates a project build with CentralBuildOutputConfigPlatLast set to `true`:
+    ///     Directory.Build.props
+    ///     Directory.Build.targets
+    ///     nuget.config
+    ///     src/MyClassLibrary/MyClassLibrary.csproj
+    /// </summary>
+    [Fact]
+    public void ConfigPlatLast()
+    {
+        // Arrange
+        this.SetupDirectoryBuildProps(projectFunction:
+            p => p.Property("CentralBuildOutputConfigPlatLast", "true"));
+
+        // Act
+        ProjectCreator project = this.CreateSaveAndBuildProject(() => ProjectCreator.Templates
+            .SdkCsproj(path: "src/MyClassLibrary/MyClassLibrary.csproj"));
+
+        // Assert
+        Properties properties = Properties.Load(project);
+
+        CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
+        cboProps.AppxPackageDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/src/MyClassLibrary/Debug/AnyCPU/AppPackages/");
+        cboProps.BaseIntDir.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/");
+        cboProps.BaseNuGetDir.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/");
+        cboProps.BaseOutDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/");
+        cboProps.BasePackagesDir.MakeRelative(this.ProjectOutput).ShouldBe("__packages/");
+        cboProps.BaseProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+        cboProps.BaseProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/src/MyClassLibrary/Debug/AnyCPU/");
+        cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/src/MyClassLibrary/Debug/AnyCPU/");
+        cboProps.BaseProjectTestResultsOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
+        cboProps.BasePublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/");
+        cboProps.BaseTestResultsDir.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
+        cboProps.CentralBuildOutputFolderPrefix.ShouldBe("__");
+        cboProps.CentralBuildOutputPath.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
+        cboProps.EnableCentralBuildOutput.ShouldBeEmpty();
+        cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
+        cboProps.ProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+        cboProps.ProjectOutputPath.ShouldBe("src/MyClassLibrary/Debug/AnyCPU/");
+        cboProps.RelativeProjectPath.ShouldBe("src/MyClassLibrary/");
+
+        CoverletProperties coverletProps = properties.Coverlet;
+        coverletProps.CoverletOutput.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
+
+        CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
+        msbuildProps.BaseIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+        msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/src/MyClassLibrary/Debug/AnyCPU/");
+
+        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
+        // depending on the OS. This is the reason for the ToPosixPath in this case.
+        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+            .ShouldBe("__output/src/MyClassLibrary/Debug/AnyCPU/netstandard2.0/");
+
+        CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
+        msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/src/MyClassLibrary/Debug/AnyCPU/");
+
+        MSBuildOtherProperties msBuildOtherProps = properties.MSBuildOther;
+        msBuildOtherProps.MSBuildProjectExtensionPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+
+        VSTestProperties vsTestProps = properties.VSTest;
+        vsTestProps.VSTestResultsDirectory.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
+
+        File.Exists("__output/src/MyClassLibrary/Debug/AnyCPU/netstandard2.0/MyClassLibrary.dll").ShouldBeTrue();
+        Directory.Exists("__intermediate/src/MyClassLibrary/Debug/netstandard2.0").ShouldBeTrue();
+    }
+
+    /// <summary>
     /// Validates a project in a project folder:
     ///     Directory.Build.props
     ///     Directory.Build.targets
@@ -93,18 +160,19 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         cboProps.BaseOutDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/");
         cboProps.BasePackagesDir.MakeRelative(this.ProjectOutput).ShouldBe("__packages/");
         cboProps.BaseProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+        cboProps.BaseProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/");
         cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/");
         cboProps.BaseProjectTestResultsOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
         cboProps.BasePublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/");
         cboProps.BaseTestResultsDir.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
-        cboProps.CentralBuildOutputFolderPrefix.MakeRelative(this.ProjectOutput).ShouldBe("__");
+        cboProps.CentralBuildOutputFolderPrefix.ShouldBe("__");
         cboProps.CentralBuildOutputPath.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
         cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
-        cboProps.EnableCentralBuildOutput.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.EnableCentralBuildOutput.ShouldBeEmpty();
         cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
         cboProps.ProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
-        cboProps.ProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/");
-        cboProps.RelativeProjectPath.MakeRelative(this.ProjectOutput).ShouldBe("src/MyClassLibrary/");
+        cboProps.ProjectOutputPath.ShouldBe("Debug/AnyCPU/src/MyClassLibrary/");
+        cboProps.RelativeProjectPath.ShouldBe("src/MyClassLibrary/");
 
         CoverletProperties coverletProps = properties.Coverlet;
         coverletProps.CoverletOutput.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
@@ -187,8 +255,9 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
 
         CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
         cboProps.AppxPackageDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/src/MyClassLibrary/AppPackages/");
+        cboProps.BaseProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/src/MyClassLibrary/");
         cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/src/MyClassLibrary/");
-        cboProps.ProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/src/MyClassLibrary/");
+        cboProps.ProjectOutputPath.ShouldBe("Debug/src/MyClassLibrary/");
 
         CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
         msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/src/MyClassLibrary/");
@@ -231,7 +300,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         cboProps.BasePackagesDir.MakeRelative(this.ProjectOutput).ShouldBe("_prefix_packages/");
         cboProps.BasePublishDir.MakeRelative(this.ProjectOutput).ShouldBe("_prefix_publish/");
         cboProps.BaseTestResultsDir.MakeRelative(this.ProjectOutput).ShouldBe("_prefix_test-results/");
-        cboProps.CentralBuildOutputFolderPrefix.MakeRelative(this.ProjectOutput).ShouldBe("_prefix_");
+        cboProps.CentralBuildOutputFolderPrefix.ShouldBe("_prefix_");
 
         File.Exists("_prefix_output/Debug/AnyCPU/src/MyClassLibrary/netstandard2.0/MyClassLibrary.dll").ShouldBeTrue();
         Directory.Exists("_prefix_intermediate/src/MyClassLibrary/Debug/netstandard2.0").ShouldBeTrue();
@@ -264,18 +333,19 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         cboProps.BaseOutDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/");
         cboProps.BasePackagesDir.MakeRelative(this.ProjectOutput).ShouldBe("__packages/");
         cboProps.BaseProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/");
+        cboProps.BaseProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/");
         cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/");
         cboProps.BaseProjectTestResultsOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
         cboProps.BasePublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/");
         cboProps.BaseTestResultsDir.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
-        cboProps.CentralBuildOutputFolderPrefix.MakeRelative(this.ProjectOutput).ShouldBe("__");
+        cboProps.CentralBuildOutputFolderPrefix.ShouldBe("__");
         cboProps.CentralBuildOutputPath.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
         cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
-        cboProps.EnableCentralBuildOutput.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.EnableCentralBuildOutput.ShouldBeEmpty();
         cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
         cboProps.ProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/");
-        cboProps.ProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/");
-        cboProps.RelativeProjectPath.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.ProjectOutputPath.ShouldBe("Debug/AnyCPU/");
+        cboProps.RelativeProjectPath.ShouldBeEmpty();
 
         CoverletProperties coverletProps = properties.Coverlet;
         coverletProps.CoverletOutput.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
@@ -323,11 +393,12 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
         cboProps.AppxPackageDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/MyClassLibrary/AppPackages/");
         cboProps.BaseProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/MyClassLibrary/");
+        cboProps.BaseProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/MyClassLibrary/");
         cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/MyClassLibrary/");
         cboProps.BaseProjectTestResultsOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/MyClassLibrary/");
         cboProps.ProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/MyClassLibrary/");
-        cboProps.ProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/MyClassLibrary/");
-        cboProps.RelativeProjectPath.MakeRelative(this.ProjectOutput).ShouldBe("MyClassLibrary/");
+        cboProps.ProjectOutputPath.ShouldBe("Debug/AnyCPU/MyClassLibrary/");
+        cboProps.RelativeProjectPath.ShouldBe("MyClassLibrary/");
 
         CoverletProperties coverletProps = properties.Coverlet;
         coverletProps.CoverletOutput.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/MyClassLibrary/");
@@ -426,10 +497,11 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
 
         CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
         cboProps.AppxPackageDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/AppPackages/");
+        cboProps.BaseProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/");
         cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/");
         cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
         cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
-        cboProps.ProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/");
+        cboProps.ProjectOutputPath.ShouldBe("Debug/AnyCPU/src/MyClassLibrary/");
 
         CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
         msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/");
@@ -471,10 +543,11 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
 
         CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
         cboProps.AppxPackageDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/Release/AnyCPU/src/MyClassLibrary/AppPackages/");
+        cboProps.BaseProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Release/AnyCPU/src/MyClassLibrary/");
         cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Release/AnyCPU/src/MyClassLibrary/");
         cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Release/");
         cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Release/");
-        cboProps.ProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Release/AnyCPU/src/MyClassLibrary/");
+        cboProps.ProjectOutputPath.ShouldBe("Release/AnyCPU/src/MyClassLibrary/");
 
         CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
         msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Release/AnyCPU/src/MyClassLibrary/");
@@ -513,18 +586,19 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         cboProps.BaseOutDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/");
         cboProps.BasePackagesDir.MakeRelative(this.ProjectOutput).ShouldBe("__packages/");
         cboProps.BaseProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+        cboProps.BaseProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/x64/src/MyClassLibrary/");
         cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/x64/src/MyClassLibrary/");
         cboProps.BaseProjectTestResultsOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
         cboProps.BasePublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/");
         cboProps.BaseTestResultsDir.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
-        cboProps.CentralBuildOutputFolderPrefix.MakeRelative(this.ProjectOutput).ShouldBe("__");
+        cboProps.CentralBuildOutputFolderPrefix.ShouldBe("__");
         cboProps.CentralBuildOutputPath.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
         cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
-        cboProps.EnableCentralBuildOutput.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.EnableCentralBuildOutput.ShouldBeEmpty();
         cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
         cboProps.ProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
-        cboProps.ProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/x64/src/MyClassLibrary/");
-        cboProps.RelativeProjectPath.MakeRelative(this.ProjectOutput).ShouldBe("src/MyClassLibrary/");
+        cboProps.ProjectOutputPath.ShouldBe("Debug/x64/src/MyClassLibrary/");
+        cboProps.RelativeProjectPath.ShouldBe("src/MyClassLibrary/");
 
         CoverletProperties coverletProps = properties.Coverlet;
         coverletProps.CoverletOutput.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
