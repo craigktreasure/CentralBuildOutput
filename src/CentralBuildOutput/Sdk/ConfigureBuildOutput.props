@@ -74,12 +74,17 @@
     <BasePublishDir>$(CentralBuildOutputPath)$(CentralBuildOutputFolderPrefix)publish/</BasePublishDir>
     <BaseTestResultsDir>$(CentralBuildOutputPath)$(CentralBuildOutputFolderPrefix)test-results/</BaseTestResultsDir>
 
-    <!-- Configure configuration and platform paths. -->
+    <!--
+      Configure configuration and platform paths.
+      CentralBuildOutputNoDefaultPlatform omits the platform portion of the path unless necessary.
+      CentralBuildOutputNoPlatform omits the platform portion of the path completely.
+      -->
     <CentralBuildOutputConfiguration Condition=" '$(Configuration)' == '' ">Debug</CentralBuildOutputConfiguration>
     <CentralBuildOutputConfiguration Condition=" '$(Configuration)' != '' ">$(Configuration)</CentralBuildOutputConfiguration>
     <CentralBuildOutputConfigurationPath>$(CentralBuildOutputConfiguration)/</CentralBuildOutputConfigurationPath>
     <CentralBuildOutputPlatform Condition=" '$(Platform)' == '' and '$(CentralBuildOutputNoDefaultPlatform)' != 'true' ">AnyCPU</CentralBuildOutputPlatform>
     <CentralBuildOutputPlatform Condition=" '$(Platform)' != '' ">$(Platform)</CentralBuildOutputPlatform>
+    <CentralBuildOutputPlatform Condition=" '$(CentralBuildOutputNoPlatform)' == 'true' "></CentralBuildOutputPlatform>
     <CentralBuildOutputPlatformPath Condition=" '$(CentralBuildOutputPlatform)' != '' ">$(CentralBuildOutputPlatform)/</CentralBuildOutputPlatformPath>
     <CentralBuildOutputConfigurationPlatformPath>$(CentralBuildOutputConfigurationPath)$(CentralBuildOutputPlatformPath)</CentralBuildOutputConfigurationPlatformPath>
 

@@ -119,6 +119,7 @@ Setting the following properties controls how Central Build Output works.
 | `CentralBuildOutputConfigPlatLast`      | Places the configuration and platform at the end of the path if set to `true`.                       |
 | `CentralBuildOutputFolderPrefix`        | Overrides the output folder prefix. Default is `__`.                                                 |
 | `CentralBuildOutputNoDefaultPlatform`   | Omits the default platform name in the output path unless necessary if set to `true`.                |
+| `CentralBuildOutputNoPlatform`          | Omits the platform from the output path if set to `true`.                                            |
 | `CentralBuildOutputRelativeToPath`      | Redefines the root folder used to calculate the relative folder used in build output folders.        |
 | `CustomBeforeCentralBuildOutputProps`   | A list of custom MSBuild projects to import **before** central build output properties are declared. |
 | `CustomAfterCentralBuildOutputProps`    | A list of custom MSBuild projects to import **after** central build output properties are declared.  |
