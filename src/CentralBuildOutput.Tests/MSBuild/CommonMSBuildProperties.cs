@@ -321,6 +321,15 @@ internal class CommonMSBuildProperties
     public string OutputPath { get; init; } = string.Empty;
 
     /// <summary>
+    /// Gets the <see cref="OutputPath"/> with path separators normalized.
+    /// </summary>
+    /// <remarks>
+    /// The target framework is added appended to the OutputPath at some point, which adds a '/' or '\' to the end
+    /// depending on the OS. We normalize the path separators to '/' in this case.
+    /// </remarks>
+    public string OutputPathNormalized => this.OutputPath.ToPosixPath();
+
+    /// <summary>
     /// Specifies the file format of the output file. This parameter can have one of the following values: -   Library. Creates a code library. (Default value.)-   Exe. Creates a console application.-   Module. Creates a module.-   Winexe. Creates a Windows-based program. For C# and Visual Basic, this property is equivalent to the /target switch. The output type can be automatically overriden by inferencing. See OutputType set to WinExe for WPF and WinForms apps. Disable inferencing by setting DisableWinExeOutputInference to true.
     /// Project type: All
     /// </summary>

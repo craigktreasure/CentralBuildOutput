@@ -5,7 +5,15 @@ using System.Diagnostics.CodeAnalysis;
 
 internal class TestProjectOutput : IDisposable
 {
+    /// <summary>
+    /// Gets the output path.
+    /// </summary>
     public string OutputPath { get; }
+
+    /// <summary>
+    /// Gets the <see cref="OutputPath"/> with path separators normalized to '/'.
+    /// </summary>
+    public string OutputPathNormalized => this.OutputPath.ToPosixPath();
 
     private TestProjectOutput(string outputPath) => this.OutputPath = outputPath;
 
@@ -52,6 +60,12 @@ internal class TestProjectOutput : IDisposable
     {
         string tempPath = ResolveTempPath();
         string outputPath = Path.Combine(paths.Prepend(tempPath).ToArray());
+
+        if (!Path.EndsInDirectorySeparator(outputPath))
+        {
+            outputPath += Path.DirectorySeparatorChar;
+        }
+
         Directory.CreateDirectory(outputPath);
         Environment.CurrentDirectory = outputPath;
         return new TestProjectOutput(outputPath);
