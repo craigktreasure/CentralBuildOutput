@@ -34,7 +34,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         Properties properties = Properties.Load(project);
 
         CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
-        cboProps.CentralBuildOutputPath.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.CentralBuildOutputPath.ShouldBe(this.ProjectOutput);
         cboProps.CentralBuildOutputPath.ShouldEndWith(Path.DirectorySeparatorChar.ToString());
     }
 
@@ -100,7 +100,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         cboProps.BasePublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/");
         cboProps.BaseTestResultsDir.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
         cboProps.CentralBuildOutputFolderPrefix.ShouldBe("__");
-        cboProps.CentralBuildOutputPath.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.CentralBuildOutputPath.ShouldBe(this.ProjectOutput);
         cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
         cboProps.EnableCentralBuildOutput.ShouldBeEmpty();
         cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
@@ -114,10 +114,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
         msbuildProps.BaseIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
         msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/src/MyClassLibrary/Debug/AnyCPU/");
-
-        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
-        // depending on the OS. This is the reason for the ToPosixPath in this case.
-        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+        msbuildProps.OutputPathNormalized.MakeRelative(this.ProjectOutput.OutputPathNormalized)
             .ShouldBe("__output/src/MyClassLibrary/Debug/AnyCPU/netstandard2.0/");
 
         CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
@@ -166,7 +163,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         cboProps.BasePublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/");
         cboProps.BaseTestResultsDir.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
         cboProps.CentralBuildOutputFolderPrefix.ShouldBe("__");
-        cboProps.CentralBuildOutputPath.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.CentralBuildOutputPath.ShouldBe(this.ProjectOutput);
         cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
         cboProps.EnableCentralBuildOutput.ShouldBeEmpty();
         cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
@@ -180,10 +177,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
         msbuildProps.BaseIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
         msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/");
-
-        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
-        // depending on the OS. This is the reason for the ToPosixPath in this case.
-        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+        msbuildProps.OutputPathNormalized.MakeRelative(this.ProjectOutput.OutputPathNormalized)
             .ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/netstandard2.0/");
 
         CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
@@ -261,9 +255,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
 
         CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
         msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/src/MyClassLibrary/");
-        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
-        // depending on the OS. This is the reason for the ToPosixPath in this case.
-        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+        msbuildProps.OutputPathNormalized.MakeRelative(this.ProjectOutput.OutputPathNormalized)
             .ShouldBe("__output/Debug/src/MyClassLibrary/netstandard2.0/");
 
         CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
@@ -310,7 +302,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         cboProps.BasePublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/");
         cboProps.BaseTestResultsDir.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
         cboProps.CentralBuildOutputFolderPrefix.ShouldBe("__");
-        cboProps.CentralBuildOutputPath.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.CentralBuildOutputPath.ShouldBe(this.ProjectOutput);
         cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
         cboProps.EnableCentralBuildOutput.ShouldBeEmpty();
         cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
@@ -324,9 +316,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
         msbuildProps.BaseIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
         msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/src/MyClassLibrary/");
-        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
-        // depending on the OS. This is the reason for the ToPosixPath in this case.
-        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+        msbuildProps.OutputPathNormalized.MakeRelative(this.ProjectOutput.OutputPathNormalized)
             .ShouldBe("__output/Debug/src/MyClassLibrary/netstandard2.0/");
 
         CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
@@ -408,7 +398,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         cboProps.BasePublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/");
         cboProps.BaseTestResultsDir.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
         cboProps.CentralBuildOutputFolderPrefix.ShouldBe("__");
-        cboProps.CentralBuildOutputPath.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.CentralBuildOutputPath.ShouldBe(this.ProjectOutput);
         cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
         cboProps.EnableCentralBuildOutput.ShouldBeEmpty();
         cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
@@ -422,10 +412,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
         msbuildProps.BaseIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/");
         msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/");
-
-        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
-        // depending on the OS. This is the reason for the ToPosixPath in this case.
-        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+        msbuildProps.OutputPathNormalized.MakeRelative(this.ProjectOutput.OutputPathNormalized)
             .ShouldBe("__output/Debug/AnyCPU/netstandard2.0/");
 
         CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
@@ -475,10 +462,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
         msbuildProps.BaseIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/MyClassLibrary/");
         msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/MyClassLibrary/");
-
-        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
-        // depending on the OS. This is the reason for the ToPosixPath in this case.
-        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+        msbuildProps.OutputPathNormalized.MakeRelative(this.ProjectOutput.OutputPathNormalized)
             .ShouldBe("__output/Debug/AnyCPU/MyClassLibrary/netstandard2.0/");
 
         CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
@@ -520,10 +504,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
 
         CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
         msbuildProps.BaseIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/dirs/");
-
-        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
-        // depending on the OS. This is the reason for the ToPosixPath in this case.
-        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+        msbuildProps.OutputPathNormalized.MakeRelative(this.ProjectOutput.OutputPathNormalized)
             .ShouldBe("__output/Debug/AnyCPU/dirs/net45/");
 
         MSBuildOtherProperties msBuildOtherProps = properties.MSBuildOther;
@@ -559,9 +540,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
         msbuildProps.Configuration.ShouldBe("Debug");
         msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/");
-        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
-        // depending on the OS. This is the reason for the ToPosixPath in this case.
-        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+        msbuildProps.OutputPathNormalized.MakeRelative(this.ProjectOutput.OutputPathNormalized)
             .ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/netstandard2.0/");
 
         CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
@@ -605,9 +584,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
         msbuildProps.Configuration.ShouldBe("Release");
         msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Release/AnyCPU/src/MyClassLibrary/");
-        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
-        // depending on the OS. This is the reason for the ToPosixPath in this case.
-        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+        msbuildProps.OutputPathNormalized.MakeRelative(this.ProjectOutput.OutputPathNormalized)
             .ShouldBe("__output/Release/AnyCPU/src/MyClassLibrary/netstandard2.0/");
 
         CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
@@ -661,7 +638,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         cboProps.BasePublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/");
         cboProps.BaseTestResultsDir.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
         cboProps.CentralBuildOutputFolderPrefix.ShouldBe("__");
-        cboProps.CentralBuildOutputPath.MakeRelative(this.ProjectOutput).ShouldBeEmpty();
+        cboProps.CentralBuildOutputPath.ShouldBe(this.ProjectOutput);
         cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
         cboProps.EnableCentralBuildOutput.ShouldBeEmpty();
         cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
@@ -675,10 +652,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
         msbuildProps.BaseIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
         msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/x64/src/MyClassLibrary/");
-
-        // The target framework is added after CentralBuildOutput sets it, which adds a / or \ to the end
-        // depending on the OS. This is the reason for the ToPosixPath in this case.
-        msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ToPosixPath()
+        msbuildProps.OutputPathNormalized.MakeRelative(this.ProjectOutput.OutputPathNormalized)
             .ShouldBe("__output/Debug/x64/src/MyClassLibrary/netstandard2.0/");
 
         CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
