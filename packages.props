@@ -17,7 +17,7 @@
                       PrivateAssets="all" />
     <PackageReference Update="Microsoft.NET.Test.Sdk"                           Version="17.1.0" />
     <PackageReference Update="Mono.Posix.NETStandard"                           Version="1.0.0" />
-    <PackageReference Update="MSBuild.ProjectCreation"                          Version="8.0.0-preview" />
+    <PackageReference Update="MSBuild.ProjectCreation"                          Version="8.0.0" />
     <PackageReference Update="Shouldly"                                         Version="4.0.3" />
     <PackageReference Update="xunit"                                            Version="2.4.1" />
     <PackageReference Update="xunit.runner.visualstudio"                        Version="2.4.3"
