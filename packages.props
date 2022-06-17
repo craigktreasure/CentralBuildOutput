@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
-    <GlobalPackageReference Include="Nerdbank.GitVersioning"                    Version="3.4.255"
+    <GlobalPackageReference Include="Nerdbank.GitVersioning"                    Version="3.5.107"
                             PrivateAssets="all"
                             Condition=" '$(EnableGitVersioning)' != 'false' " />
     <GlobalPackageReference Include="Microsoft.Build.Artifacts"                 Version="4.0.4"
@@ -15,12 +15,18 @@
     <PackageReference Update="IsExternalInit"                                   Version="1.0.2"
                       IncludeAssets="runtime; build; native; contentfiles; analyzers"
                       PrivateAssets="all" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk"                           Version="17.1.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk"                           Version="17.2.0" />
     <PackageReference Update="Mono.Posix.NETStandard"                           Version="1.0.0" />
     <PackageReference Update="MSBuild.ProjectCreation"                          Version="8.0.0" />
+    <!-- Transitive update to workaround
+      https://github.com/jeffkl/MSBuildProjectCreator/issues/170
+    -->
+    <PackageReference Update="NuGet.Frameworks"                                 Version="6.2.1" />
+    <PackageReference Update="NuGet.Frameworks"                                 Version="5.11.2"
+                      Condition=" '$(TargetFramework)' == 'netcoreapp3.1' " />
     <PackageReference Update="Shouldly"                                         Version="4.0.3" />
     <PackageReference Update="xunit"                                            Version="2.4.1" />
-    <PackageReference Update="xunit.runner.visualstudio"                        Version="2.4.3"
+    <PackageReference Update="xunit.runner.visualstudio"                        Version="2.4.5"
                       IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive"
                       PrivateAssets="all" />
   </ItemGroup>

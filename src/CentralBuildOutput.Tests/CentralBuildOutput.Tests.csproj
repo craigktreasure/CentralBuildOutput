@@ -11,6 +11,12 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Mono.Posix.NETStandard" />
     <PackageReference Include="MSBuild.ProjectCreation" />
+    <!-- Transitive update to workaround
+      https://github.com/jeffkl/MSBuildProjectCreator/issues/170
+    -->
+    <PackageReference Include="NuGet.Frameworks">
+      <ExcludeAsset>Compile</ExcludeAsset>
+    </PackageReference>
     <PackageReference Include="Shouldly" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
