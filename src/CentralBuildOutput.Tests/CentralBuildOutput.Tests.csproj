@@ -28,4 +28,13 @@
     <None Include="..\CentralBuildOutput\Sdk\*" Link="Sdk\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <!--
+    A hack to use the .NET SDKs version of NuGet.Frameworks.dll, since it has a newer version than what is publicly available.
+  -->
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <Copy SourceFiles="$(MSBuildSDKsPath)\..\NuGet.Frameworks.dll"
+          DestinationFolder="$(OutputPath)"
+          ContinueOnError="false" />
+  </Target>
+
 </Project>
