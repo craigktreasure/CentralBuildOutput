@@ -3,7 +3,6 @@
   <PropertyGroup>
     <RepoRootPath>$(MSBuildThisFileDirectory)</RepoRootPath>
     <SourceRootPath>$(MSBuildThisFileDirectory)/src</SourceRootPath>
-    <CentralPackagesFile>$(RepoRootPath)packages.props</CentralPackagesFile>
     <CentralBuildOutputPath>$(RepoRootPath)</CentralBuildOutputPath>
     <CentralBuildOutputRelativeToPath>$(SourceRootPath)</CentralBuildOutputRelativeToPath>
     <BaseArtifactsPath>$(MSBuildThisFileDirectory)__artifacts/</BaseArtifactsPath>
