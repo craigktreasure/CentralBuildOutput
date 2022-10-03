@@ -30,12 +30,12 @@ jobs:
           fetch-depth: 0
 
       - name: Setup .NET 3.1.x SDK
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 3.1.x
 
       - name: Setup .NET 6.x SDK
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 6.x
 
