@@ -44,6 +44,12 @@ internal class CommonMSBuildMacros
     public string IntDir { get; init; } = string.Empty;
 
     /// <summary>
+    /// The native output location for the publish target; includes the trailing backslash '\'. Defaults to the $(OutDir)native\ folder.
+    /// Not yet documented by Microsoft.
+    /// </summary>
+    public string NativeOutputPath { get; init; } = string.Empty;
+
+    /// <summary>
     /// Path to the output file directory. If it's a relative path, output files go to this path appended to the project directory. This path should have a trailing slash. It resolves to the value for the Output Directory property. Don't use $(IntDir) to define this property.
     /// </summary>
     public string OutDir { get; init; } = string.Empty;
@@ -177,6 +183,7 @@ internal class CommonMSBuildMacros
         creator.TryGetPropertyValue(nameof(FrameworkVersion), out string frameworkVersion);
         creator.TryGetPropertyValue(nameof(FxCopDir), out string fxCopDir);
         creator.TryGetPropertyValue(nameof(IntDir), out string intDir);
+        creator.TryGetPropertyValue(nameof(NativeOutputPath), out string nativeOutputPath);
         creator.TryGetPropertyValue(nameof(OutDir), out string outDir);
         creator.TryGetPropertyValue(nameof(Platform), out string platform);
         creator.TryGetPropertyValue(nameof(PlatformShortName), out string platformShortName);
@@ -212,6 +219,7 @@ internal class CommonMSBuildMacros
             FrameworkVersion = frameworkVersion,
             FxCopDir = fxCopDir,
             IntDir = intDir,
+            NativeOutputPath = nativeOutputPath,
             OutDir = outDir,
             Platform = platform,
             PlatformShortName = platformShortName,
