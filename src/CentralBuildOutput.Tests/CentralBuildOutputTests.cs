@@ -49,7 +49,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
     public void CentralBuildOutputPathMustBeSet()
     {
         // Arrange
-        this.SetupDirectoryBuildProps(centralBuidOutputPath: string.Empty);
+        this.SetupDirectoryBuildProps(centralBuildOutputPath: string.Empty);
 
         // Act
         ProjectCreator.Templates
@@ -182,6 +182,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
 
         CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
         msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/");
+        msbuildMacros.NativeOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/native/");
 
         MSBuildOtherProperties msBuildOtherProps = properties.MSBuildOther;
         msBuildOtherProps.MSBuildProjectExtensionPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
@@ -787,6 +788,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
 
         CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
         msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/win10-x64/");
+        msbuildMacros.NativeOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/win10-x64/native/");
 
         MSBuildOtherProperties msBuildOtherProps = properties.MSBuildOther;
         msBuildOtherProps.MSBuildProjectExtensionPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
@@ -861,11 +863,11 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
     }
 
     private ProjectCreator SetupDirectoryBuildProps(
-        string centralBuidOutputPath = "$(MSBuildThisFileDirectory)",
+        string centralBuildOutputPath = "$(MSBuildThisFileDirectory)",
         Action<ProjectCreator>? projectFunction = null)
         => ProjectCreator.Templates.DirectoryBuildProps(
             this.ProjectOutput,
             ThisAssemblyDirectory,
-            centralBuidOutputPath,
+            centralBuildOutputPath,
             projectFunction);
 }
