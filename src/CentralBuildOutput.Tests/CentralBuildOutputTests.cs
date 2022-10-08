@@ -333,6 +333,69 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
     }
 
     /// <summary>
+    /// Validates a NoTargets project that a .proj project file:
+    ///     Directory.Build.props
+    ///     Directory.Build.targets
+    ///     nuget.config
+    ///     src/MyCMakeLibrary/MyCMakeLibrary.proj
+    /// </summary>
+    [Fact]
+    public void NoTargetsProjProject()
+    {
+        // Arrange
+        this.SetupDirectoryBuildProps();
+
+        // Act
+        ProjectCreator project = this.CreateSaveAndBuildProject(() => ProjectCreator.Templates.SdkCsproj(
+            path: "src/MyCMakeLibrary/MyCMakeLibrary.proj",
+            sdk: "Microsoft.Build.NoTargets/3.5.6"));
+
+        // Assert
+        Properties properties = Properties.Load(project);
+
+        CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
+        cboProps.AppxPackageDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyCMakeLibrary/AppPackages/");
+        cboProps.BaseIntDir.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/");
+        cboProps.BaseNuGetDir.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/");
+        cboProps.BaseOutDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/");
+        cboProps.BasePackagesDir.MakeRelative(this.ProjectOutput).ShouldBe("__packages/");
+        cboProps.BaseProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyCMakeLibrary/");
+        cboProps.BaseProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyCMakeLibrary/");
+        cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyCMakeLibrary/");
+        cboProps.BaseProjectTestResultsOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyCMakeLibrary/");
+        cboProps.BasePublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/");
+        cboProps.BaseTestResultsDir.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
+        cboProps.CentralBuildOutputFolderPrefix.ShouldBe("__");
+        cboProps.CentralBuildOutputPath.ShouldBe(this.ProjectOutput);
+        cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
+        cboProps.EnableCentralBuildOutput.ShouldBeEmpty();
+        cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
+        cboProps.ProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyCMakeLibrary/");
+        cboProps.ProjectOutputPath.ShouldBe("Debug/AnyCPU/src/MyCMakeLibrary/");
+        cboProps.RelativeProjectPath.ShouldBe("src/MyCMakeLibrary/");
+
+        CoverletProperties coverletProps = properties.Coverlet;
+        coverletProps.CoverletOutput.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyCMakeLibrary/");
+
+        CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
+        msbuildProps.BaseIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyCMakeLibrary/");
+        msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyCMakeLibrary/");
+        msbuildProps.OutputPathNormalized.MakeRelative(this.ProjectOutput.OutputPathNormalized)
+            .ShouldBe("__output/Debug/AnyCPU/src/MyCMakeLibrary/netstandard2.0/");
+
+        CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
+        msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyCMakeLibrary/");
+
+        MSBuildOtherProperties msBuildOtherProps = properties.MSBuildOther;
+        msBuildOtherProps.MSBuildProjectExtensionPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyCMakeLibrary/");
+
+        VSTestProperties vsTestProps = properties.VSTest;
+        vsTestProps.VSTestResultsDirectory.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyCMakeLibrary/");
+
+        Directory.Exists("__intermediate/src/MyCMakeLibrary/Debug/netstandard2.0").ShouldBeTrue();
+    }
+
+    /// <summary>
     /// Validates a project in a project folder, but with CentralBuildOutputFolderPrefix set to "_prefix_":
     ///     Directory.Build.props
     ///     Directory.Build.targets
