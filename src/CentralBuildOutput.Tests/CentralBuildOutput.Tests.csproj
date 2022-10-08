@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
@@ -30,8 +30,10 @@
 
   <!--
     A hack to use the .NET SDKs version of NuGet.Frameworks.dll, since it has a newer version than what is publicly available.
+
+    This is not applicable when building from within Visual Studio.
   -->
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(TargetFramework)' == 'net6.0' ">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(BuildingInsideVisualStudio)' != 'true' and '$(TargetFramework)' == 'net6.0' ">
     <Copy SourceFiles="$(MSBuildSDKsPath)\..\NuGet.Frameworks.dll"
           DestinationFolder="$(OutputPath)"
           ContinueOnError="false" />
