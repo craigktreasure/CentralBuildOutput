@@ -115,6 +115,12 @@
   <PropertyGroup Condition=" '$(CentralBuildOutputEnabledAndReady)' == 'true' ">
     <CentralBuildOutputDotNetStyleProject Condition=" $(MSBuildProjectFile.EndsWith('.csproj')) ">true</CentralBuildOutputDotNetStyleProject>
 
+    <!--
+      The .proj files aren't .NET projects per se, but the properties we define are useful when using something
+      like the NoTargets SDK to execute commands to build non-.NET things to be later consumed by .NET projects.
+    -->
+    <CentralBuildOutputDotNetStyleProject Condition=" $(MSBuildProjectFile.EndsWith('.proj')) and '$(MSBuildProjectFile)' != 'dirs.proj' ">true</CentralBuildOutputDotNetStyleProject>
+
     <CentralBuildOutputTraversalProject Condition=" '$(IsTraversal)' == 'true' ">true</CentralBuildOutputTraversalProject>
   </PropertyGroup>
 
