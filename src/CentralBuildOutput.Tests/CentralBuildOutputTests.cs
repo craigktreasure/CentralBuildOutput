@@ -668,11 +668,109 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         Directory.Exists("__intermediate/src/MyClassLibrary/x64/Debug/netstandard2.0").ShouldBeTrue();
     }
 
+    /// <summary>
+    /// Validates a project which specified a Runtime Identifier:
+    ///     Directory.Build.props
+    ///     Directory.Build.targets
+    ///     nuget.config
+    ///     src/MyClassLibrary/MyClassLibrary.csproj
+    /// </summary>
+    [Fact]
+    public void WithRuntimeIdentifier()
+    {
+        // Arrange
+        this.SetupDirectoryBuildProps();
+
+        // Act
+        ProjectCreator project = this.CreateSaveAndPublishProject(() => ProjectCreator.Templates
+            .SdkCsproj(path: "src/MyClassLibrary/MyClassLibrary.csproj", globalProperties: new Dictionary<string, string>
+            {
+                ["RuntimeIdentifier"] = "win10-x64"
+            })
+            .Property("RuntimeIdentifiers", "win10-x64;linux-x64"));
+
+        // Assert
+        Properties properties = Properties.Load(project);
+
+        CentralBuildOutputProperties cboProps = properties.CentralBuildOutput;
+        cboProps.AppxPackageDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/AppPackages/");
+        cboProps.BaseIntDir.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/");
+        cboProps.BaseNuGetDir.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/");
+        cboProps.BaseOutDir.MakeRelative(this.ProjectOutput).ShouldBe("__output/");
+        cboProps.BasePackagesDir.MakeRelative(this.ProjectOutput).ShouldBe("__packages/");
+        cboProps.BaseProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+        cboProps.BaseProjectOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/");
+        cboProps.BaseProjectPublishOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/win10-x64/");
+        cboProps.BaseProjectTestResultsOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
+        cboProps.BasePublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/");
+        cboProps.BaseTestResultsDir.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/");
+        cboProps.CentralBuildOutputFolderPrefix.ShouldBe("__");
+        cboProps.CentralBuildOutputPath.ShouldBe(this.ProjectOutput);
+        cboProps.DefaultArtifactsSource.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
+        cboProps.EnableCentralBuildOutput.ShouldBeEmpty();
+        cboProps.PackageOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__packages/NuGet/Debug/");
+        cboProps.ProjectIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+        cboProps.ProjectOutputPath.ShouldBe("Debug/AnyCPU/src/MyClassLibrary/");
+        cboProps.RelativeProjectPath.ShouldBe("src/MyClassLibrary/");
+
+        CoverletProperties coverletProps = properties.Coverlet;
+        coverletProps.CoverletOutput.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
+
+        CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
+        msbuildProps.BaseIntermediateOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+        msbuildProps.BaseOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/");
+        msbuildProps.OutputPathNormalized.MakeRelative(this.ProjectOutput.OutputPathNormalized)
+            .ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/netstandard2.0/win10-x64/");
+
+        CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
+        msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/win10-x64/");
+
+        MSBuildOtherProperties msBuildOtherProps = properties.MSBuildOther;
+        msBuildOtherProps.MSBuildProjectExtensionPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
+
+        VSTestProperties vsTestProps = properties.VSTest;
+        vsTestProps.VSTestResultsDirectory.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
+
+        File.Exists("__output/Debug/AnyCPU/src/MyClassLibrary/netstandard2.0/win10-x64/MyClassLibrary.dll").ShouldBeTrue();
+        Directory.Exists("__intermediate/src/MyClassLibrary/Debug/netstandard2.0").ShouldBeTrue();
+    }
+
     private ProjectCreator CreateSaveAndBuildProject(Func<ProjectCreator> projectFunction)
     {
         ProjectCreator projectCreator = projectFunction()
             .Save()
             .TryBuild(restore: true, out bool buildResult, out BuildOutput buildOutput);
+
+        // Fail on a failed build, any warnings, or any errors (presumably also failed build).
+        if (!buildResult || buildOutput.Warnings.Any() || buildOutput.Errors.Any())
+        {
+            foreach (string warning in buildOutput.Warnings)
+            {
+                this.TestOutput.WriteLine("Warning: " + warning);
+            }
+
+            foreach (string error in buildOutput.Errors)
+            {
+                this.TestOutput.WriteLine("Error: " + error);
+            }
+
+            buildOutput.Dispose();
+
+            buildResult.ShouldBeTrue();
+            buildOutput.Warnings.ShouldBeEmpty();
+            buildOutput.Errors.ShouldBeEmpty();
+        }
+
+        buildOutput.Dispose();
+
+        return projectCreator;
+    }
+
+    private ProjectCreator CreateSaveAndPublishProject(Func<ProjectCreator> projectFunction)
+    {
+        ProjectCreator projectCreator = projectFunction()
+            .Save()
+            .TryBuild(restore: true, target: "publish", out bool buildResult, out BuildOutput buildOutput);
 
         // Fail on a failed build, any warnings, or any errors (presumably also failed build).
         if (!buildResult || buildOutput.Warnings.Any() || buildOutput.Errors.Any())

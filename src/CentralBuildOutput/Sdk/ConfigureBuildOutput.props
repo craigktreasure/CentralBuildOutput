@@ -108,6 +108,9 @@
     <BaseProjectPublishOutputPath>$(BasePublishDir)$(ProjectOutputPath)</BaseProjectPublishOutputPath>
     <BaseProjectTestResultsOutputPath>$(BaseTestResultsDir)$(RelativeProjectPath)</BaseProjectTestResultsOutputPath>
 
+    <!-- If a RuntimeIdentifier is specified, we should append it to the publish output path. -->
+    <BaseProjectPublishOutputPath Condition=" '$(RuntimeIdentifier)' != '' and '$(_UsingDefaultRuntimeIdentifier)' != 'true' ">$(BaseProjectPublishOutputPath)$(RuntimeIdentifier)/</BaseProjectPublishOutputPath>
+
     <!-- Configure Appx output path. -->
     <AppxPackageDir>$(BaseProjectOutputPath)AppPackages/</AppxPackageDir>
   </PropertyGroup>
