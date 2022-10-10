@@ -144,7 +144,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         this.SetupDirectoryBuildProps();
 
         // Act
-        ProjectCreator project = this.CreateSaveAndBuildProject(() => ProjectCreator.Templates
+        ProjectCreator project = this.CreateSaveAndPublishProject(() => ProjectCreator.Templates
             .SdkCsproj(path: "src/MyClassLibrary/MyClassLibrary.csproj"));
 
         // Assert
@@ -191,6 +191,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         vsTestProps.VSTestResultsDirectory.MakeRelative(this.ProjectOutput).ShouldBe("__test-results/src/MyClassLibrary/");
 
         File.Exists("__output/Debug/AnyCPU/src/MyClassLibrary/netstandard2.0/MyClassLibrary.dll").ShouldBeTrue();
+        File.Exists("__publish/Debug/AnyCPU/src/MyClassLibrary/netstandard2.0/MyClassLibrary.dll").ShouldBeTrue();
         Directory.Exists("__intermediate/src/MyClassLibrary/Debug/netstandard2.0").ShouldBeTrue();
     }
 
@@ -806,27 +807,14 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
             .Save()
             .TryBuild(restore: true, out bool buildResult, out BuildOutput buildOutput);
 
-        // Fail on a failed build, any warnings, or any errors (presumably also failed build).
-        if (!buildResult || buildOutput.Warnings.Any() || buildOutput.Errors.Any())
+        try
         {
-            foreach (string warning in buildOutput.Warnings)
-            {
-                this.TestOutput.WriteLine("Warning: " + warning);
-            }
-
-            foreach (string error in buildOutput.Errors)
-            {
-                this.TestOutput.WriteLine("Error: " + error);
-            }
-
-            buildOutput.Dispose();
-
-            buildResult.ShouldBeTrue();
-            buildOutput.Warnings.ShouldBeEmpty();
-            buildOutput.Errors.ShouldBeEmpty();
+            this.ValidateBuildOutput(buildResult, buildOutput);
         }
-
-        buildOutput.Dispose();
+        finally
+        {
+            buildOutput.Dispose();
+        }
 
         return projectCreator;
     }
@@ -837,27 +825,14 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
             .Save()
             .TryBuild(restore: true, target: "publish", out bool buildResult, out BuildOutput buildOutput);
 
-        // Fail on a failed build, any warnings, or any errors (presumably also failed build).
-        if (!buildResult || buildOutput.Warnings.Any() || buildOutput.Errors.Any())
+        try
         {
-            foreach (string warning in buildOutput.Warnings)
-            {
-                this.TestOutput.WriteLine("Warning: " + warning);
-            }
-
-            foreach (string error in buildOutput.Errors)
-            {
-                this.TestOutput.WriteLine("Error: " + error);
-            }
-
-            buildOutput.Dispose();
-
-            buildResult.ShouldBeTrue();
-            buildOutput.Warnings.ShouldBeEmpty();
-            buildOutput.Errors.ShouldBeEmpty();
+            this.ValidateBuildOutput(buildResult, buildOutput);
         }
-
-        buildOutput.Dispose();
+        finally
+        {
+            buildOutput.Dispose();
+        }
 
         return projectCreator;
     }
@@ -870,4 +845,25 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
             ThisAssemblyDirectory,
             centralBuildOutputPath,
             projectFunction);
+
+    private void ValidateBuildOutput(bool buildResult, BuildOutput buildOutput)
+    {
+        // Fail on a failed build, any warnings, or any errors (presumably also failed build).
+        if (!buildResult || buildOutput.Warnings.Any() || buildOutput.Errors.Any())
+        {
+            foreach (string warning in buildOutput.Warnings)
+            {
+                this.TestOutput.WriteLine("Warning: " + warning);
+            }
+
+            foreach (string error in buildOutput.Errors)
+            {
+                this.TestOutput.WriteLine("Error: " + error);
+            }
+
+            buildResult.ShouldBeTrue();
+            buildOutput.Warnings.ShouldBeEmpty();
+            buildOutput.Errors.ShouldBeEmpty();
+        }
+    }
 }
