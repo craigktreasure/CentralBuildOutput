@@ -8,7 +8,7 @@
           Condition=" '$(EnableCentralBuildOutput)' != 'false' And '$(CustomBeforeCentralBuildOutputTargets)' != '' And Exists('$(CustomBeforeCentralBuildOutputTargets)') " />
 
   <!-- Configure build outputs. -->
-  <Import Project="$(MSBuildThisFileDirectory)/ConfigureBuildOutput.props" />
+  <Import Project="$(MSBuildThisFileDirectory)/ConfigureBuildOutput.targets" />
 
   <!--
     Import a user extension if specified.

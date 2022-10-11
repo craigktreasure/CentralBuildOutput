@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project InitialTargets="CheckCentralBuildOutputProperties" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project InitialTargets="CheckCentralBuildOutputProperties;CentralBuildOutput_PostConfiguration" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!--
     Verify that CentralBuildOutputPath was specified.
@@ -151,5 +151,34 @@
     <MSBuildProjectExtensionPath>$(BaseProjectIntermediateOutputPath)</MSBuildProjectExtensionPath>
     <OutputPath>$(BaseProjectOutputPath)</OutputPath>
   </PropertyGroup>
+
+  <!--
+    This target is used to adjust the publish output once more of the project
+    has been loaded and the necessary properties have been fully resolved, like
+    TargetFramework.
+  -->
+  <Target Name="CentralBuildOutput_PostConfiguration">
+
+    <PropertyGroup>
+
+      <!--
+        Configure BaseProjectPublishOutputPath with the target framework.
+      -->
+      <BaseProjectPublishOutputPath>$(BaseProjectPublishOutputPath)$(TargetFramework)/</BaseProjectPublishOutputPath>
+
+      <!-- If a RuntimeIdentifier is specified, we should append it to the publish output path. -->
+      <BaseProjectPublishOutputPath Condition=" '$(RuntimeIdentifier)' != '' and '$(_UsingDefaultRuntimeIdentifier)' != 'true' ">$(BaseProjectPublishOutputPath)$(RuntimeIdentifier)/</BaseProjectPublishOutputPath>
+
+    </PropertyGroup>
+
+    <!--
+      Configure .NET style project output.
+    -->
+    <PropertyGroup Condition=" '$(CentralBuildOutputDotNetStyleProject)' == 'true' ">
+      <PublishDir>$(BaseProjectPublishOutputPath)</PublishDir>
+      <NativeOutputPath>$(PublishDir)native/</NativeOutputPath>
+    </PropertyGroup>
+
+  </Target>
 
 </Project>
