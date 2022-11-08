@@ -2,7 +2,7 @@ namespace Treasure.Build.CentralBuildOutput.Tests.MSBuild;
 
 using Microsoft.Build.Utilities.ProjectCreation;
 
-internal class MSBuildOtherProperties
+internal sealed class MSBuildOtherProperties
 {
     /// <summary>
     /// Gets or sets the ms build project extension path.

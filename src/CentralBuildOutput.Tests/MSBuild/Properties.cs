@@ -3,7 +3,7 @@ namespace Treasure.Build.CentralBuildOutput.Tests.MSBuild;
 using Microsoft.Build.Utilities.ProjectCreation;
 using System.Text.Json;
 
-internal class Properties
+internal sealed class Properties
 {
     public CentralBuildOutputProperties CentralBuildOutput { get; }
 

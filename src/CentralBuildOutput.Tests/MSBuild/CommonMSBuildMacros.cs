@@ -6,7 +6,7 @@ using Microsoft.Build.Utilities.ProjectCreation;
 /// Common macros for MSBuild commands and properties.
 /// https://docs.microsoft.com/cpp/build/reference/common-macros-for-build-commands-and-properties
 /// </summary>
-internal class CommonMSBuildMacros
+internal sealed class CommonMSBuildMacros
 {
     /// <summary>
     /// The name of the current project configuration, for example, "Debug".

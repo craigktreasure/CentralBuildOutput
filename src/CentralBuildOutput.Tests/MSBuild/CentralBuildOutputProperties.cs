@@ -2,7 +2,7 @@ namespace Treasure.Build.CentralBuildOutput.Tests.MSBuild;
 
 using Microsoft.Build.Utilities.ProjectCreation;
 
-internal class CentralBuildOutputProperties
+internal sealed class CentralBuildOutputProperties
 {
     /// <summary>
     /// The appx package directory.
