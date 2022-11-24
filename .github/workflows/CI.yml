@@ -55,7 +55,7 @@ jobs:
         shell: pwsh
         run: |
           $packageVersion = dotnet nbgv get-version --variable NuGetPackageVersion
-          Write-Host "::set-output name=package_version::$packageVersion"
+          "package_version=$packageVersion" >> $env:GITHUB_OUTPUT
 
       - name: DotNet Format
         run: dotnet format --no-restore --verify-no-changes
