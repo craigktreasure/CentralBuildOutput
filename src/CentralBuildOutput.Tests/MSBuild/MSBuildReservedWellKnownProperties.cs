@@ -6,7 +6,7 @@ using Microsoft.Build.Utilities.ProjectCreation;
 /// MSBuild reserved and well-known properties.
 /// https://docs.microsoft.com/visualstudio/msbuild/msbuild-reserved-and-well-known-properties
 /// </summary>
-internal class MSBuildReservedWellKnownProperties
+internal sealed class MSBuildReservedWellKnownProperties
 {
     /// <summary>
     /// The version of MSBuild assemblies used to build the project.

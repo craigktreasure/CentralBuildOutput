@@ -6,7 +6,7 @@ using Microsoft.Build.Utilities.ProjectCreation;
 /// Common MSBuild project properties.
 /// https://docs.microsoft.com/visualstudio/msbuild/common-msbuild-project-properties
 /// </summary>
-internal class CommonMSBuildProperties
+internal sealed class CommonMSBuildProperties
 {
     /// <summary>
     /// Specifies additional folders in which compilers should look for reference assemblies.

@@ -2,7 +2,7 @@ namespace Treasure.Build.CentralBuildOutput.Tests.MSBuild;
 
 using Microsoft.Build.Utilities.ProjectCreation;
 
-internal class CoverletProperties
+internal sealed class CoverletProperties
 {
     /// <summary>
     /// The coverlet output path.

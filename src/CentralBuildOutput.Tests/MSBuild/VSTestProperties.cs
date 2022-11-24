@@ -6,7 +6,7 @@ using Microsoft.Build.Utilities.ProjectCreation;
 /// Visual Studio Test properties.
 /// https://github.com/microsoft/vstest/blob/main/src/Microsoft.TestPlatform.Build/Microsoft.TestPlatform.targets
 /// </summary>
-internal class VSTestProperties
+internal sealed class VSTestProperties
 {
     /// <summary>
     /// The VSTest results directory.

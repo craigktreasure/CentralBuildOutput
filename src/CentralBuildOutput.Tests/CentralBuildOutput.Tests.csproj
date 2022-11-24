@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <AssemblyName>Treasure.Build.CentralBuildOutput.Tests</AssemblyName>
     <RootNamespace>Treasure.Build.CentralBuildOutput.Tests</RootNamespace>
@@ -33,7 +33,7 @@
 
     This is not applicable when building from within Visual Studio.
   -->
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(BuildingInsideVisualStudio)' != 'true' and '$(TargetFramework)' == 'net6.0' ">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(BuildingInsideVisualStudio)' != 'true' and '$(TargetFramework)' != 'netcoreapp3.1' ">
     <Copy SourceFiles="$(MSBuildSDKsPath)\..\NuGet.Frameworks.dll"
           DestinationFolder="$(OutputPath)"
           ContinueOnError="false" />
