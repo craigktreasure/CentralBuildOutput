@@ -1,4 +1,4 @@
-namespace Treasure.Build.CentralBuildOutput.Tests;
+﻿namespace Treasure.Build.CentralBuildOutput.Tests.Extensions;
 
 using Microsoft.Build.Utilities.ProjectCreation;
 

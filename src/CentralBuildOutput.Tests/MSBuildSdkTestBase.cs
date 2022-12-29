@@ -1,6 +1,7 @@
-namespace Treasure.Build.CentralBuildOutput.Tests;
+﻿namespace Treasure.Build.CentralBuildOutput.Tests;
 
 using Microsoft.Build.Utilities.ProjectCreation;
+
 using Xunit.Abstractions;
 
 public abstract class MSBuildSdkTestBase : MSBuildTestBase, IDisposable
@@ -16,8 +17,8 @@ public abstract class MSBuildSdkTestBase : MSBuildTestBase, IDisposable
     protected MSBuildSdkTestBase(ITestOutputHelper testOutput)
     {
         this.TestOutput = testOutput;
-        WriteNuGetConfig();
-        WriteDirectoryBuildTargets();
+        this.WriteNuGetConfig();
+        this.WriteDirectoryBuildTargets();
     }
 
     public void Dispose()

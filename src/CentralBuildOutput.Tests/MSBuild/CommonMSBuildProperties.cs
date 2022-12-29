@@ -1,6 +1,8 @@
-namespace Treasure.Build.CentralBuildOutput.Tests.MSBuild;
+﻿namespace Treasure.Build.CentralBuildOutput.Tests.MSBuild;
 
 using Microsoft.Build.Utilities.ProjectCreation;
+
+using Treasure.Build.CentralBuildOutput.Tests.Extensions;
 
 /// <summary>
 /// Common MSBuild project properties.

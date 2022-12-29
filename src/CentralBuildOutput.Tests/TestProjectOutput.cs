@@ -1,7 +1,9 @@
-namespace Treasure.Build.CentralBuildOutput.Tests;
+﻿namespace Treasure.Build.CentralBuildOutput.Tests;
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+
+using Treasure.Build.CentralBuildOutput.Tests.Extensions;
 
 internal sealed class TestProjectOutput : IDisposable
 {
