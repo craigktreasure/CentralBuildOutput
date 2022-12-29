@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
   <PropertyGroup>
     <RepoRootPath>$(MSBuildThisFileDirectory)</RepoRootPath>
     <SourceRootPath>$(MSBuildThisFileDirectory)/src</SourceRootPath>
@@ -8,7 +9,8 @@
     <BaseArtifactsPath>$(MSBuildThisFileDirectory)__artifacts/</BaseArtifactsPath>
   </PropertyGroup>
 
-  <Import Project="$(RepoRootPath)/build/Defaults.props" />
+  <Import Project="$(RepoRootPath)/eng/Defaults.props" />
 
   <Sdk Name="Treasure.Build.CentralBuildOutput" />
+
 </Project>
