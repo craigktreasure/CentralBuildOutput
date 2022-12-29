@@ -59,7 +59,7 @@ Underneath these build output folders will be a tree structure that matches the 
 
 Consider the following project structure:
 
-```
+```text
 /Directory.Build.props
 /src/MyClassLibrary/MyClassLibrary.csproj
 /src/MyClassLibrary.Tests/MyClassLibrary.Tests.csproj
@@ -69,7 +69,7 @@ The relative path between the root of your repository and your project will be c
 relative path for **MyClassLibrary** is `src/MyClassLibrary`. A `Debug` build, publish, package, and test output would
 look like the following:
 
-```
+```text
 /__intermediate/src/MyClassLibrary/*
 /__intermediate/src/MyClassLibrary.Tests/*
 /__output/Debug/AnyCPU/src/MyClassLibrary/net6.0/*
@@ -99,7 +99,7 @@ The relative path can be adjusted using the `CentralBuildOutputRelativeToPath` M
 
 This would result in the following build output:
 
-```
+```text
 /__intermediate/MyClassLibrary/*
 /__intermediate/MyClassLibrary.Tests/*
 /__output/Debug/AnyCPU/MyClassLibrary/net6.0/*
