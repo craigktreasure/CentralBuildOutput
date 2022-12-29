@@ -44,8 +44,7 @@
     <RelativeProjectPath>$([MSBuild]::MakeRelative($(CentralBuildOutputPath), $(MSBuildProjectDirectory)))/</RelativeProjectPath>
 
     <!--
-      Workaround for a bug in .NET Core 3.1's version of MSBuild.MakeRelative, which doesn't return the expected value
-      when the the paths are equal.
+      Simplify the variable when the paths are equal.
     -->
     <RelativeProjectPath Condition=" '$(MSBuildProjectDirectory)\' == '$(CentralBuildOutputPath)' "></RelativeProjectPath>
 

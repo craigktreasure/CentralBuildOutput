@@ -35,7 +35,7 @@ Example `Directory.Build.props`:
   </PropertyGroup>
 
   <!-- Import the CentralBuildOutput SDK. -->
-  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="1.0.0" />
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="2.0.0" />
 </Project>
 ```
 
@@ -59,7 +59,7 @@ Underneath these build output folders will be a tree structure that matches the 
 
 Consider the following project structure:
 
-```
+```text
 /Directory.Build.props
 /src/MyClassLibrary/MyClassLibrary.csproj
 /src/MyClassLibrary.Tests/MyClassLibrary.Tests.csproj
@@ -69,7 +69,7 @@ The relative path between the root of your repository and your project will be c
 relative path for **MyClassLibrary** is `src/MyClassLibrary`. A `Debug` build, publish, package, and test output would
 look like the following:
 
-```
+```text
 /__intermediate/src/MyClassLibrary/*
 /__intermediate/src/MyClassLibrary.Tests/*
 /__output/Debug/AnyCPU/src/MyClassLibrary/net6.0/*
@@ -93,13 +93,13 @@ The relative path can be adjusted using the `CentralBuildOutputRelativeToPath` M
   </PropertyGroup>
 
   <!-- Import the CentralBuildOutput SDK. -->
-  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="1.0.0" />
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="2.0.0" />
 </Project>
 ```
 
 This would result in the following build output:
 
-```
+```text
 /__intermediate/MyClassLibrary/*
 /__intermediate/MyClassLibrary.Tests/*
 /__output/Debug/AnyCPU/MyClassLibrary/net6.0/*
@@ -140,7 +140,7 @@ Specify the version number as an attribute of the SDK import:
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   ...
-  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="1.0.0" />
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="2.0.0" />
   ...
 </Project>
 ```
@@ -152,7 +152,7 @@ synchronize versions across multiple projects in a solution:
 {
   ...
   "msbuild-sdks": {
-    "Treasure.Build.CentralBuildOutput" : "1.0.0"
+    "Treasure.Build.CentralBuildOutput" : "2.0.0"
   }
 }
 ```

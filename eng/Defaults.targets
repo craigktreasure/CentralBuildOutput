@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="Sdk.targets" Sdk="Microsoft.Build.CentralPackageVersions" />
+<Project>
 
   <PropertyGroup Condition="'$(IsTestProject)' != 'true'">
     <ArtifactsPath>$(BaseArtifactsPath)/$(MSBuildProjectName)/</ArtifactsPath>
@@ -10,4 +8,5 @@
     <Content Include="$(RepoRootPath)xunit.runner.json"
              CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+
 </Project>

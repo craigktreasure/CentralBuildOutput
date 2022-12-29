@@ -19,8 +19,6 @@ jobs:
     name: 'Build CentralBuildOutput'
     runs-on: ubuntu-latest
 
-    if: "!contains(github.event.head_commit.message, 'skip ci')"
-
     outputs:
       package_version: ${{steps.version.outputs.package_version}}
 
@@ -33,7 +31,6 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: |
-            3.1.x
             6.x
             7.0.100
             7.x
@@ -86,7 +83,7 @@ jobs:
     env:
       PACKAGE_VERSION: ${{ needs.build.outputs.package_version }}
 
-    if: "!contains(github.event.head_commit.message, 'skip release')"
+    if: ${{ contains(github.event.head_commit.message, 'do release') }}
 
     steps:
       - name: Setup NuGet

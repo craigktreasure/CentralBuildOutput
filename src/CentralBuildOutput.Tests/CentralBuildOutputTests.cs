@@ -1,8 +1,12 @@
-namespace Treasure.Build.CentralBuildOutput.Tests;
+﻿namespace Treasure.Build.CentralBuildOutput.Tests;
 
 using Microsoft.Build.Utilities.ProjectCreation;
+
 using Shouldly;
+
+using Treasure.Build.CentralBuildOutput.Tests.Extensions;
 using Treasure.Build.CentralBuildOutput.Tests.MSBuild;
+
 using Xunit;
 using Xunit.Abstractions;
 

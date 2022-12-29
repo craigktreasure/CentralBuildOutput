@@ -1,7 +1,8 @@
-namespace Treasure.Build.CentralBuildOutput.Tests.MSBuild;
+﻿namespace Treasure.Build.CentralBuildOutput.Tests.MSBuild;
+
+using System.Text.Json;
 
 using Microsoft.Build.Utilities.ProjectCreation;
-using System.Text.Json;
 
 internal sealed class Properties
 {
@@ -38,7 +39,7 @@ internal sealed class Properties
     }
 
     public static Properties Load(ProjectCreator creator)
-        => new Properties(
+        => new(
             CentralBuildOutputProperties.Load(creator),
             CoverletProperties.Load(creator),
             CommonMSBuildProperties.Load(creator),

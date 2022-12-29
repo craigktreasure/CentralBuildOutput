@@ -4,19 +4,15 @@
 
 ### Using Visual Studio
 
-* [Visual Studio 2022 17+](https://visualstudio.microsoft.com/downloads/)
-* [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
-  * Visual Studio 2022 comes with the .NET 6 SDK.
-* [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
-* [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet/3.1)
+* [Visual Studio 2022 17.4+][download-vs]
+  * You'll also need the [.NET 6 SDK][download-dotnet-6-sdk] and [.NET 7 SDK][download-dotnet-7-sdk].
 
-### Visual Studio Code
+### Using Visual Studio Code
 
-* [Visual Studio Code](https://code.visualstudio.com/Download)
+* [Visual Studio Code][download-vs-code]
   * Install recommended extensions.
-* [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
-* [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
-* [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet/3.1)
+* [.NET 6 SDK][download-dotnet-6-sdk]
+* [.NET 7 SDK][download-dotnet-7-sdk]
 
 ## Build the SDK
 
@@ -33,3 +29,8 @@ To run all the tests, simply run the following command:
 ``` shell
 dotnet test
 ```
+
+[download-dotnet-6-sdk]: https://dotnet.microsoft.com/download/dotnet/6.0 "Download .NET 6.0"
+[download-dotnet-7-sdk]: https://dotnet.microsoft.com/download/dotnet/7.0 "Download .NET 7.0"
+[download-vs]: https://visualstudio.microsoft.com/downloads/ "Download Visual Studio"
+[download-vs-code]: https://code.visualstudio.com/Download "Download Visual Studio Code"
