@@ -35,7 +35,7 @@ Example `Directory.Build.props`:
   </PropertyGroup>
 
   <!-- Import the CentralBuildOutput SDK. -->
-  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="1.0.0" />
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="2.0.0" />
 </Project>
 ```
 
@@ -93,7 +93,7 @@ The relative path can be adjusted using the `CentralBuildOutputRelativeToPath` M
   </PropertyGroup>
 
   <!-- Import the CentralBuildOutput SDK. -->
-  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="1.0.0" />
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="2.0.0" />
 </Project>
 ```
 
@@ -140,7 +140,7 @@ Specify the version number as an attribute of the SDK import:
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   ...
-  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="1.0.0" />
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="2.0.0" />
   ...
 </Project>
 ```
@@ -152,7 +152,7 @@ synchronize versions across multiple projects in a solution:
 {
   ...
   "msbuild-sdks": {
-    "Treasure.Build.CentralBuildOutput" : "1.0.0"
+    "Treasure.Build.CentralBuildOutput" : "2.0.0"
   }
 }
 ```
