@@ -6,6 +6,6 @@
   },
   "msbuild-sdks": {
     "Microsoft.Build.NoTargets": "3.7.0",
-    "Treasure.Build.CentralBuildOutput": "1.0.17"
+    "Treasure.Build.CentralBuildOutput": "2.0.0"
   }
 }
