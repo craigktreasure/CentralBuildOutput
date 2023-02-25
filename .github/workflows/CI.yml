@@ -51,8 +51,9 @@ jobs:
           $packageVersion = dotnet nbgv get-version --variable NuGetPackageVersion
           "package_version=$packageVersion" >> $env:GITHUB_OUTPUT
 
-      - name: DotNet Format
-        run: dotnet format --no-restore --verify-no-changes
+      # Disable until https://github.com/dotnet/format/issues/1800 is fixed.
+      # - name: DotNet Format
+      #   run: dotnet format --no-restore --verify-no-changes
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
