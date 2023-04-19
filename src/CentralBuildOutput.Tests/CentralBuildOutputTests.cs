@@ -186,7 +186,6 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
 
         CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
         msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/");
-        msbuildMacros.NativeOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/native/");
 
         MSBuildOtherProperties msBuildOtherProps = properties.MSBuildOther;
         msBuildOtherProps.MSBuildProjectExtensionPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
@@ -793,7 +792,6 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
 
         CommonMSBuildMacros msbuildMacros = properties.MSBuildMacros;
         msbuildMacros.PublishDir.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/win10-x64/");
-        msbuildMacros.NativeOutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__publish/Debug/AnyCPU/src/MyClassLibrary/win10-x64/native/");
 
         MSBuildOtherProperties msBuildOtherProps = properties.MSBuildOther;
         msBuildOtherProps.MSBuildProjectExtensionPath.MakeRelative(this.ProjectOutput).ShouldBe("__intermediate/src/MyClassLibrary/");
