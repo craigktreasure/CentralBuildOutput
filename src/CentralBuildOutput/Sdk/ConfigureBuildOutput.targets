@@ -137,7 +137,6 @@
     <BaseOutputPath>$(BaseProjectOutputPath)</BaseOutputPath>
     <OutputPath>$(BaseProjectOutputPath)</OutputPath>
     <PublishDir>$(BaseProjectPublishOutputPath)</PublishDir>
-    <NativeOutputPath>$(PublishDir)native/</NativeOutputPath>
     <VSTestResultsDirectory>$(BaseProjectTestResultsOutputPath)</VSTestResultsDirectory>
     <CoverletOutput>$(BaseProjectTestResultsOutputPath)</CoverletOutput>
   </PropertyGroup>
@@ -175,7 +174,6 @@
     -->
     <PropertyGroup Condition=" '$(CentralBuildOutputDotNetStyleProject)' == 'true' ">
       <PublishDir>$(BaseProjectPublishOutputPath)</PublishDir>
-      <NativeOutputPath>$(PublishDir)native/</NativeOutputPath>
     </PropertyGroup>
 
   </Target>
