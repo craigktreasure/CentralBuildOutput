@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageVersion Include="IsExternalInit"                                    Version="1.0.3" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk"                            Version="17.6.3" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk"                            Version="17.7.0" />
     <PackageVersion Include="Mono.Posix.NETStandard"                            Version="1.0.0" />
     <PackageVersion Include="MSBuild.ProjectCreation"                           Version="10.0.0" />
     <PackageVersion Include="Shouldly"                                          Version="4.2.1" />
