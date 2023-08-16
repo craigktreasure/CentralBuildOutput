@@ -170,7 +170,7 @@ internal sealed class CommonMSBuildMacros
     public string WebDeployPath { get; init; } = string.Empty;
 
     /// <summary>
-    /// The absolute path to the location of <localhost>. For example, c:\inetpub\wwwroot.
+    /// The absolute path to the location of &lt;localhost&gt;. For example, c:\inetpub\wwwroot.
     /// </summary>
     public string WebDeployRoot { get; init; } = string.Empty;
 

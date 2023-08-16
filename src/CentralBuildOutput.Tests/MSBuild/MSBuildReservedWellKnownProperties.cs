@@ -16,14 +16,14 @@ internal sealed class MSBuildReservedWellKnownProperties
     public string MSBuildAssemblyVersion { get; init; } = string.Empty;
 
     /// <summary>
-    /// The absolute path of the folder where the MSBuild binaries that are currently being used are located (for example, C:\Windows\Microsoft.Net\Framework\<versionNumber>). This property is useful if you have to refer to files in the MSBuild directory. Do not include the final backslash on this property.
+    /// The absolute path of the folder where the MSBuild binaries that are currently being used are located (for example, C:\Windows\Microsoft.Net\Framework\&lt;versionNumber&gt;). This property is useful if you have to refer to files in the MSBuild directory. Do not include the final backslash on this property.
     /// Type: Reserved
     /// Example: C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin
     /// </summary>
     public string MSBuildBinPath { get; init; } = string.Empty;
 
     /// <summary>
-    /// Introduced in the .NET Framework 4: there is no difference between the default values of MSBuildExtensionsPath and MSBuildExtensionsPath32. You can set the environment variable MSBUILDLEGACYEXTENSIONSPATH to a non-null value to enable the behavior of the default value of MSBuildExtensionsPath in earlier versions. In the .NET Framework 3.5 and earlier, the default value of MSBuildExtensionsPath points to the path of the MSBuild subfolder under the \Program Files\ or \Program Files (x86) folder, depending on the bitness of the current process. For example, for a 32-bit process on a 64-bit machine, this property points to the \Program Files (x86) folder. For a 64-bit process on a 64-bit machine, this property points to the \Program Files folder. Do not include the final backslash on this property. This location is a useful place to put custom target files. For example, your target files could be installed at \Program Files\MSBuild\MyFiles\Northwind.targets and then imported in project files by using this XML code: <Import Project="$(MSBuildExtensionsPath)\MyFiles\Northwind.targets"/>
+    /// Introduced in the .NET Framework 4: there is no difference between the default values of MSBuildExtensionsPath and MSBuildExtensionsPath32. You can set the environment variable MSBUILDLEGACYEXTENSIONSPATH to a non-null value to enable the behavior of the default value of MSBuildExtensionsPath in earlier versions. In the .NET Framework 3.5 and earlier, the default value of MSBuildExtensionsPath points to the path of the MSBuild subfolder under the \Program Files\ or \Program Files (x86) folder, depending on the bitness of the current process. For example, for a 32-bit process on a 64-bit machine, this property points to the \Program Files (x86) folder. For a 64-bit process on a 64-bit machine, this property points to the \Program Files folder. Do not include the final backslash on this property. This location is a useful place to put custom target files. For example, your target files could be installed at \Program Files\MSBuild\MyFiles\Northwind.targets and then imported in project files by using this XML code: &lt;Import Project="$(MSBuildExtensionsPath)\MyFiles\Northwind.targets"/&gt;
     /// Type: Well-known
     /// Example: C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\MSBuild
     /// </summary>
@@ -79,7 +79,7 @@ internal sealed class MSBuildReservedWellKnownProperties
     public string MSBuildProgramFiles32 { get; init; } = string.Empty;
 
     /// <summary>
-    /// The complete list of targets that are specified in the DefaultTargets attribute of the Project element. For example, the following Project element would have an MSBuildDefaultTargets property value of A;B;C: <Project DefaultTargets="A;B;C" >
+    /// The complete list of targets that are specified in the DefaultTargets attribute of the Project element. For example, the following Project element would have an MSBuildDefaultTargets property value of A;B;C: &lt;Project DefaultTargets="A;B;C" &gt;
     /// Type: Reserved
     /// Example: Build
     /// </summary>
@@ -142,7 +142,7 @@ internal sealed class MSBuildReservedWellKnownProperties
     public string MSBuildSemanticVersion { get; init; } = string.Empty;
 
     /// <summary>
-    /// The absolute path of the folder where MSBuild is called. By using this property, you can build everything below a specific point in a project tree without creating <dirs>.proj files in every directory. Instead, you have just one project—for example, c:\traversal.proj, as shown here: <Project ...>     <ItemGroup>         <ProjectFiles              Include="$            (MSBuildStartupDirectory)            **\*.csproj"/>     </ItemGroup>     <Target Name="build">         <MSBuild             Projects="@(ProjectFiles)"/>     </Target> </Project> To build at any point in the tree, type: msbuild c:\traversal.proj Do not include the final backslash on this property.
+    /// The absolute path of the folder where MSBuild is called. By using this property, you can build everything below a specific point in a project tree without creating &lt;dirs&gt;.proj files in every directory. Instead, you have just one project—for example, c:\traversal.proj, as shown here: &lt;Project ...&gt;&lt;ItemGroup&gt;&lt;ProjectFiles Include="$(MSBuildStartupDirectory)**\*.csproj"/&gt; &lt;/ItemGroup&gt; &lt;Target Name="build"&gt; &lt;MSBuild Projects="@(ProjectFiles)"/&gt;&lt;/Target&gt;&lt;/Project&gt; To build at any point in the tree, type: msbuild c:\traversal.proj Do not include the final backslash on this property.
     /// Type: Reserved
     /// Example: c:\Source\Repos\ConsoleApp1
     /// </summary>
