@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.1.32228.430
+VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CentralBuildOutput", "src\CentralBuildOutput\CentralBuildOutput.csproj", "{7F38EBD6-9C20-4004-A186-38A9EB01D664}"
 EndProject

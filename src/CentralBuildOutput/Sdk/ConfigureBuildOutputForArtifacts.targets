@@ -1,0 +1,11 @@
+<Project>
+
+  <PropertyGroup Condition=" '$(EnableCentralBuildOutput)' != 'false' ">
+    <!-- Configure test and code coverage output. -->
+    <BaseTestResultsOutputPath>$(ArtifactsPath)/test-results/</BaseTestResultsOutputPath>
+    <BaseProjectTestResultsOutputPath>$(BaseTestResultsOutputPath)$(MSBuildProjectName)/</BaseProjectTestResultsOutputPath>
+    <VSTestResultsDirectory>$(BaseProjectTestResultsOutputPath)</VSTestResultsDirectory>
+    <CoverletOutput>$(BaseProjectTestResultsOutputPath)</CoverletOutput>
+  </PropertyGroup>
+
+</Project>

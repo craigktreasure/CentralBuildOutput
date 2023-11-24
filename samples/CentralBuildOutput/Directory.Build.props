@@ -2,14 +2,23 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
+    <SamplesRoot>$(MSBuildThisFileDirectory)</SamplesRoot>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <!-- Define the build output location. -->
-    <CentralBuildOutputPath>$(MSBuildThisFileDirectory)</CentralBuildOutputPath>
+    <CentralBuildOutputPath>$(SamplesRoot)</CentralBuildOutputPath>
 
     <!-- Adjust the relative path (eliminates the src folder in the build output tree). -->
-    <CentralBuildOutputRelativeToPath>$(MSBuildThisFileDirectory)/src</CentralBuildOutputRelativeToPath>
+    <CentralBuildOutputRelativeToPath>$(SamplesRoot)/src</CentralBuildOutputRelativeToPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(MSBuildProjectName.StartsWith('MyClassLibraryUsingArtifacts'))">
+    <!-- Configure artifacts output: https://learn.microsoft.com/dotnet/core/sdk/artifacts-output -->
+    <UseArtifactsOutput>true</UseArtifactsOutput>
   </PropertyGroup>
 
   <!-- Import the CentralBuildOutput SDK. -->
-  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="3.0.0" />
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="3.1.0" />
 
 </Project>
