@@ -215,7 +215,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         ProjectCreator project = this.CreateSaveAndBuildProject(() => ProjectCreator.Templates
             .SdkCsproj(
                 path: "src/MyClassLibrary/MyClassLibrary.csproj",
-                targetFrameworks: new[] { "netstandard1.6", "netstandard2.0", "netstandard2.1" }));
+                targetFrameworks: ["netstandard1.6", "netstandard2.0", "netstandard2.1"]));
 
         // Assert
         Properties properties = Properties.Load(project);
@@ -851,7 +851,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
     private void ValidateBuildOutput(bool buildResult, BuildOutput buildOutput)
     {
         // Fail on a failed build, any warnings, or any errors (presumably also failed build).
-        if (!buildResult || buildOutput.Warnings.Any() || buildOutput.Errors.Any())
+        if (!buildResult || buildOutput.Warnings.Count > 0 || buildOutput.Errors.Count > 0)
         {
             foreach (string warning in buildOutput.Warnings)
             {

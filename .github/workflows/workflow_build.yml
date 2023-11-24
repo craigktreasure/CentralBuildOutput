@@ -55,10 +55,10 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: output_${{ inputs.platform }}
-          path: __output
+          path: __artifacts/bin
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v3
         with:
           name: packages_${{ inputs.platform }}
-          path: __packages
+          path: __artifacts/package
