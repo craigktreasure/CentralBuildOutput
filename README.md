@@ -6,7 +6,9 @@
 
 - [Treasure.Build.CentralBuildOutput](#treasurebuildcentralbuildoutput)
   - [Centrally Managing Build Output](#centrally-managing-build-output)
-  - [Extensibility](#extensibility)
+    - [Build output](#build-output)
+    - [Extensibility and configuration](#extensibility-and-configuration)
+    - [Using with artifacts output](#using-with-artifacts-output)
   - [Controlling SDK versions](#controlling-sdk-versions)
 
 The `Treasure.Build.CentralBuildOutput` MSBuild project SDK allows project tree owners to centralize their build
@@ -14,9 +16,9 @@ output in one place. By default, build output is placed in the project folder in
 will cause all of the build output to be written to a common set of folders in a tree structure that mimics the project
 structure.
 
-This project was heavily inspired by the project SDKs from [MSBuildSdks](https://github.com/microsoft/MSBuildSdks).
+This project was heavily inspired by the project SDKs from [MSBuildSdks][msbuild-sdks].
 
-For more information about MSBuild project SDKs, see [here](https://docs.microsoft.com/visualstudio/msbuild/how-to-use-project-sdk).
+For more information about MSBuild project SDKs, see [here][msbuild-project-sdks].
 
 ## Centrally Managing Build Output
 
@@ -35,13 +37,19 @@ Example `Directory.Build.props`:
   </PropertyGroup>
 
   <!-- Import the CentralBuildOutput SDK. -->
-  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="3.0.0" />
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="3.1.0" />
 </Project>
 ```
 
 > **Note:**
 >
 > The version number can be controlled in other ways. See [here](#controlling-sdk-versions).
+
+### Build output
+
+> **Note:**
+>
+> When using .NET 8 [artifacts output][artifacts-output], the build output will be different. See [below](#using-with-artifacts-output) for more details.
 
 Build output folders written to the location defined by the `CentralBuildOutputPath` MSBuild property:
 
@@ -93,7 +101,7 @@ The relative path can be adjusted using the `CentralBuildOutputRelativeToPath` M
   </PropertyGroup>
 
   <!-- Import the CentralBuildOutput SDK. -->
-  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="3.0.0" />
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="3.1.0" />
 </Project>
 ```
 
@@ -109,7 +117,7 @@ This would result in the following build output:
 /__test-results/MyClassLibrary.Tests/*
 ```
 
-## Extensibility
+### Extensibility and configuration
 
 Setting the following properties controls how Central Build Output works.
 
@@ -127,9 +135,49 @@ Setting the following properties controls how Central Build Output works.
 | `CustomAfterCentralBuildOutputTargets`  | A list of custom MSBuild projects to import **after** central build output targets are declared.     |
 | `EnableCentralBuildOutput`              | Indicates whether central build output is enabled or not. Set to `false` to disable.                 |
 
+### Using with artifacts output
+
+Since .NET 8's new [artifacts output][artifacts-output] accomplishes many of the same goals as
+`Treasure.Build.CentralBuildOutput`, the SDK will behave differently when used in conjunction with artifacts output.
+Specifically, no changes will be made to artifacts output except that test results and
+[coverlet code coverage][coverlet] output will be output to a `test-results` directory underneath the artifacts output
+path.
+
+[Artifacts output][artifacts-output] can be enabled by setting:
+
+```xml
+<UseArtifactsOutput>true</UseArtifactsOutput>
+```
+
+The artifact output path can also be configured by setting the `ArtifactsPath` property:
+
+```xml
+<ArtifactsPath>$(MSBuildThisFileDirectory)__artifacts</ArtifactsPath>
+```
+
+The `ArtifactsPath` property would be used instead of setting the `CentralBuildOutputPath` property. None of the
+`CentralBuildOutput*` properties defined in [extensibility and configuration](#extensibility-and-configuration) will
+have any effect, but the rest still work.
+
+A simple example `Directory.Build.props` would be:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- Define the build output location. -->
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <ArtifactsPath>$(MSBuildThisFileDirectory)__artifacts</ArtifactsPath>
+  </PropertyGroup>
+
+  <!-- Import the CentralBuildOutput SDK. -->
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="3.1.0" />
+</Project>
+```
+
 ## Controlling SDK versions
 
-For more detailed information, see the [MSBuild documentation](https://docs.microsoft.com/visualstudio/msbuild/how-to-use-project-sdk).
+For more detailed information, see the [MSBuild documentation][msbuild-project-sdks].
 
 When using an MSBuild Project SDK obtained via NuGet (such as the SDK in this repo) a specific version **must** be
 specified.
@@ -140,7 +188,7 @@ Specify the version number as an attribute of the SDK import:
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   ...
-  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="3.0.0" />
+  <Sdk Name="Treasure.Build.CentralBuildOutput" Version="3.1.0" />
   ...
 </Project>
 ```
@@ -152,7 +200,12 @@ synchronize versions across multiple projects in a solution:
 {
   ...
   "msbuild-sdks": {
-    "Treasure.Build.CentralBuildOutput" : "3.0.0"
+    "Treasure.Build.CentralBuildOutput" : "3.1.0"
   }
 }
 ```
+
+[artifacts-output]: https://learn.microsoft.com/en-us/dotnet/core/sdk/artifacts-output "Artifacts output layout"
+[coverlet]: https://github.com/coverlet-coverage/coverlet "Coverlet"
+[msbuild-project-sdks]: https://learn.microsoft.com/visualstudio/msbuild/how-to-use-project-sdk "Use MSBuild project SDKs"
+[msbuild-sdks]: https://github.com/microsoft/MSBuildSdks

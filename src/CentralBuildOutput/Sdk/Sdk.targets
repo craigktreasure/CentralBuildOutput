@@ -7,8 +7,11 @@
   <Import Project="$(CustomBeforeCentralBuildOutputTargets)"
           Condition=" '$(EnableCentralBuildOutput)' != 'false' And '$(CustomBeforeCentralBuildOutputTargets)' != '' And Exists('$(CustomBeforeCentralBuildOutputTargets)') " />
 
-  <!-- Configure build outputs. -->
-  <Import Project="$(MSBuildThisFileDirectory)/ConfigureBuildOutput.targets" />
+  <!-- Configure build outputs when not using artifacts. -->
+  <Import Condition=" '$(UseArtifactsOutput)' != 'true' " Project="$(MSBuildThisFileDirectory)/ConfigureBuildOutput.targets" />
+
+  <!-- Configure build outputs when using artifacts. -->
+  <Import Condition=" '$(UseArtifactsOutput)' == 'true' " Project="$(MSBuildThisFileDirectory)/ConfigureBuildOutputForArtifacts.targets" />
 
   <!--
     Import a user extension if specified.
