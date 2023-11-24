@@ -1,9 +1,5 @@
 <Project>
 
-  <PropertyGroup Condition="'$(IsTestProject)' != 'true'">
-    <ArtifactsPath>$(BaseArtifactsPath)/$(MSBuildProjectName)/</ArtifactsPath>
-  </PropertyGroup>
-
   <ItemGroup Condition="'$(IsTestProject)' == 'true'">
     <Content Include="$(RepoRootPath)xunit.runner.json"
              CopyToOutputDirectory="PreserveNewest" />

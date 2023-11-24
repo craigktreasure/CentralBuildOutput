@@ -4,13 +4,10 @@
   <PropertyGroup>
     <RepoRootPath>$(MSBuildThisFileDirectory)</RepoRootPath>
     <SourceRootPath>$(MSBuildThisFileDirectory)/src</SourceRootPath>
-    <CentralBuildOutputPath>$(RepoRootPath)</CentralBuildOutputPath>
-    <CentralBuildOutputRelativeToPath>$(SourceRootPath)</CentralBuildOutputRelativeToPath>
-    <BaseArtifactsPath>$(MSBuildThisFileDirectory)__artifacts/</BaseArtifactsPath>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <ArtifactsPath>$(RepoRootPath)__artifacts</ArtifactsPath>
   </PropertyGroup>
 
   <Import Project="$(RepoRootPath)/eng/Defaults.props" />
-
-  <Sdk Name="Treasure.Build.CentralBuildOutput" />
 
 </Project>

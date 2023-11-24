@@ -6,6 +6,11 @@ using Microsoft.Build.Utilities.ProjectCreation;
 
 internal sealed class Properties
 {
+    private static readonly JsonSerializerOptions jsonSerializerOptions = new()
+    {
+        WriteIndented = true,
+    };
+
     public CentralBuildOutputProperties CentralBuildOutput { get; }
 
     public CoverletProperties Coverlet { get; }
@@ -48,8 +53,5 @@ internal sealed class Properties
             MSBuildReservedWellKnownProperties.Load(creator),
             VSTestProperties.Load(creator));
 
-    public override string ToString() => JsonSerializer.Serialize(this, new JsonSerializerOptions()
-    {
-        WriteIndented = true,
-    });
+    public override string ToString() => JsonSerializer.Serialize(this, jsonSerializerOptions);
 }
