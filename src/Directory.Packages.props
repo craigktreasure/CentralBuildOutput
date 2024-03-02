@@ -17,7 +17,7 @@
     <PackageVersion Include="Mono.Posix.NETStandard"                            Version="1.0.0" />
     <PackageVersion Include="MSBuild.ProjectCreation"                           Version="11.0.1" />
     <PackageVersion Include="Shouldly"                                          Version="4.2.1" />
-    <PackageVersion Include="xunit"                                             Version="2.6.6" />
+    <PackageVersion Include="xunit"                                             Version="2.7.0" />
     <PackageVersion Include="xunit.runner.visualstudio"                         Version="2.5.7" />
   </ItemGroup>
 
