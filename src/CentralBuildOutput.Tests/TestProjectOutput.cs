@@ -57,7 +57,11 @@ internal sealed class TestProjectOutput : IDisposable
             // symlink. This prevents us from getting the full path that is
             // actually used later in msbuild. We need to resolve the full
             // path so that our tests can compare apples to apples.
-            tempPath = Mono.Unix.UnixPath.GetCompleteRealPath(tempPath);
+            FileSystemInfo? linkTarget = Directory.ResolveLinkTarget(tempPath, true);
+            if (linkTarget is not null)
+            {
+                tempPath = linkTarget.FullName;
+            }
         }
 
         return tempPath;
