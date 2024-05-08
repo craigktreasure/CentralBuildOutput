@@ -10,13 +10,14 @@ public abstract class MSBuildSdkTestBase : MSBuildTestBase, IDisposable
 
     private bool disposedValue;
 
-    private protected TestProjectOutput ProjectOutput { get; } = TestProjectOutput.CreateInTemp();
+    private protected TestProjectOutput ProjectOutput { get; }
 
     protected ITestOutputHelper TestOutput { get; }
 
     protected MSBuildSdkTestBase(ITestOutputHelper testOutput)
     {
         this.TestOutput = testOutput;
+        this.ProjectOutput = TestProjectOutput.CreateInTemp(testOutput);
         this.WriteNuGetConfig();
         this.WriteDirectoryBuildTargets();
     }
@@ -35,6 +36,7 @@ public abstract class MSBuildSdkTestBase : MSBuildTestBase, IDisposable
             {
                 this.ProjectOutput.Dispose();
             }
+
             this.disposedValue = true;
         }
     }
@@ -43,7 +45,7 @@ public abstract class MSBuildSdkTestBase : MSBuildTestBase, IDisposable
         => ProjectCreator.Create().Save(Path.Combine(this.ProjectOutput, "Directory.Build.targets"));
 
     private void WriteNuGetConfig()
-            => File.WriteAllText(
+        => File.WriteAllText(
             Path.Combine(this.ProjectOutput, "NuGet.config"),
             @"<?xml version=""1.0"" encoding=""utf-8""?>
 <configuration>

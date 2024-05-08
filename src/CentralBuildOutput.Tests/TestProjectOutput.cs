@@ -3,7 +3,11 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
+using Microsoft.Extensions.Logging;
+
 using Treasure.Build.CentralBuildOutput.Tests.Extensions;
+
+using Xunit.Abstractions;
 
 internal sealed class TestProjectOutput : IDisposable
 {
@@ -19,12 +23,25 @@ internal sealed class TestProjectOutput : IDisposable
 
     private TestProjectOutput(string outputPath) => this.OutputPath = outputPath;
 
-    public static TestProjectOutput CreateInTemp()
-        => CreateInTemp("CentralBuildOutputTests", Path.GetRandomFileName());
+    public static TestProjectOutput CreateInTemp(ITestOutputHelper outputHelper)
+        => CreateInTemp(outputHelper.BuildLoggerFor<TestProjectOutput>());
 
-    public static TestProjectOutput CreateInTemp(params string[] paths)
+    public static TestProjectOutput CreateInTemp(ILogger logger)
+        => CreateInTemp(logger, "CentralBuildOutputTests", Path.GetRandomFileName());
+
+    public static implicit operator string(TestProjectOutput value) => value.OutputPath;
+
+    public void Dispose()
     {
-        string tempPath = ResolveTempPath();
+        this.Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    public override string ToString() => this.OutputPath;
+
+    private static TestProjectOutput CreateInTemp(ILogger logger, params string[] paths)
+    {
+        string tempPath = ResolveTempPath(logger);
         string outputPath = Path.Combine(paths.Prepend(tempPath).ToArray());
 
         if (!Path.EndsInDirectorySeparator(outputPath))
@@ -37,19 +54,11 @@ internal sealed class TestProjectOutput : IDisposable
         return new TestProjectOutput(outputPath);
     }
 
-    public static implicit operator string(TestProjectOutput value) => value.OutputPath;
-
-    public void Dispose()
-    {
-        this.Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    public override string ToString() => this.OutputPath;
-
-    private static string ResolveTempPath()
+    [SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates")]
+    private static string ResolveTempPath(ILogger logger)
     {
         string tempPath = Path.GetTempPath();
+        logger.LogInformation("Temp path: {TempPath}", tempPath);
 
         if (OperatingSystem.IsMacOS())
         {
@@ -58,9 +67,11 @@ internal sealed class TestProjectOutput : IDisposable
             // actually used later in msbuild. We need to resolve the full
             // path so that our tests can compare apples to apples.
             FileSystemInfo? linkTarget = Directory.ResolveLinkTarget(tempPath, true);
+            logger.LogCritical("Temp path is a symlink: {IsSymlink}", linkTarget is not null);
             if (linkTarget is not null)
             {
                 tempPath = linkTarget.FullName;
+                logger.LogCritical("Updated temp path: {TempPath}", tempPath);
             }
         }
 
