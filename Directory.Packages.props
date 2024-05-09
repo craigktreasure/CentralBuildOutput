@@ -8,4 +8,23 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
+  <!--
+    Global pacakge references
+    https://learn.microsoft.com/nuget/consume-packages/central-package-management#global-package-references
+    -->
+  <ItemGroup>
+    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.6.133" />
+    <GlobalPackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="IsExternalInit"                                    Version="1.0.3" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk"                            Version="17.9.0" />
+    <PackageVersion Include="MSBuild.ProjectCreation"                           Version="12.0.1" />
+    <PackageVersion Include="Neovolve.Logging.Xunit"                            Version="5.0.1" />
+    <PackageVersion Include="Shouldly"                                          Version="4.2.1" />
+    <PackageVersion Include="xunit"                                             Version="2.8.0" />
+    <PackageVersion Include="xunit.runner.visualstudio"                         Version="2.8.0" />
+  </ItemGroup>
+
 </Project>
