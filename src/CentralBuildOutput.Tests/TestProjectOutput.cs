@@ -63,18 +63,6 @@ internal sealed class TestProjectOutput : IDisposable
 
         logger.LogInformation("Temp path: {TempPath}", tempPath);
 
-        // We can sometimes get a value that is a symlink. This prevents us from
-        // getting the full path that is actually used later in msbuild. We need
-        // to resolve the full path so that our tests can compare apples to
-        // apples.
-        FileSystemInfo? linkTarget = Directory.ResolveLinkTarget(tempPath, true);
-        logger.LogCritical("Temp path is a symlink: {IsSymlink}", linkTarget is not null);
-        if (linkTarget is not null)
-        {
-            tempPath = linkTarget.FullName;
-            logger.LogCritical("Updated temp path: {TempPath}", tempPath);
-        }
-
         return tempPath;
     }
 
