@@ -57,22 +57,22 @@ internal sealed class TestProjectOutput : IDisposable
     [SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates")]
     private static string ResolveTempPath(ILogger logger)
     {
-        string tempPath = Path.GetTempPath();
+        // The Path.GetTempPath is problematic on macOS machines as it can returns values that are hard to resolve and
+        // compare to later. We use the RUNNER_TEMP environment variable when available to get a more reliable temp path.
+        string tempPath = Environment.GetEnvironmentVariable("RUNNER_TEMP") ?? Path.GetTempPath();
+
         logger.LogInformation("Temp path: {TempPath}", tempPath);
 
-        if (OperatingSystem.IsMacOS())
+        // We can sometimes get a value that is a symlink. This prevents us from
+        // getting the full path that is actually used later in msbuild. We need
+        // to resolve the full path so that our tests can compare apples to
+        // apples.
+        FileSystemInfo? linkTarget = Directory.ResolveLinkTarget(tempPath, true);
+        logger.LogCritical("Temp path is a symlink: {IsSymlink}", linkTarget is not null);
+        if (linkTarget is not null)
         {
-            // macOS can sometimes use an environment variable that maps to a
-            // symlink. This prevents us from getting the full path that is
-            // actually used later in msbuild. We need to resolve the full
-            // path so that our tests can compare apples to apples.
-            FileSystemInfo? linkTarget = Directory.ResolveLinkTarget(tempPath, true);
-            logger.LogCritical("Temp path is a symlink: {IsSymlink}", linkTarget is not null);
-            if (linkTarget is not null)
-            {
-                tempPath = linkTarget.FullName;
-                logger.LogCritical("Updated temp path: {TempPath}", tempPath);
-            }
+            tempPath = linkTarget.FullName;
+            logger.LogCritical("Updated temp path: {TempPath}", tempPath);
         }
 
         return tempPath;
