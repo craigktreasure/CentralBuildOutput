@@ -14,8 +14,8 @@
   <ItemGroup>
     <PackageVersion Include="IsExternalInit"                                    Version="1.0.3" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk"                            Version="17.9.0" />
-    <PackageVersion Include="Mono.Posix.NETStandard"                            Version="1.0.0" />
     <PackageVersion Include="MSBuild.ProjectCreation"                           Version="11.0.1" />
+    <PackageVersion Include="Neovolve.Logging.Xunit"                            Version="5.0.1" />
     <PackageVersion Include="Shouldly"                                          Version="4.2.1" />
     <PackageVersion Include="xunit"                                             Version="2.7.0" />
     <PackageVersion Include="xunit.runner.visualstudio"                         Version="2.5.7" />

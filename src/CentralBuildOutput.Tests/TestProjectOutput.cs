@@ -3,7 +3,11 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
+using Microsoft.Extensions.Logging;
+
 using Treasure.Build.CentralBuildOutput.Tests.Extensions;
+
+using Xunit.Abstractions;
 
 internal sealed class TestProjectOutput : IDisposable
 {
@@ -19,12 +23,25 @@ internal sealed class TestProjectOutput : IDisposable
 
     private TestProjectOutput(string outputPath) => this.OutputPath = outputPath;
 
-    public static TestProjectOutput CreateInTemp()
-        => CreateInTemp("CentralBuildOutputTests", Path.GetRandomFileName());
+    public static TestProjectOutput CreateInTemp(ITestOutputHelper outputHelper)
+        => CreateInTemp(outputHelper.BuildLoggerFor<TestProjectOutput>());
 
-    public static TestProjectOutput CreateInTemp(params string[] paths)
+    public static TestProjectOutput CreateInTemp(ILogger logger)
+        => CreateInTemp(logger, "CentralBuildOutputTests", Path.GetRandomFileName());
+
+    public static implicit operator string(TestProjectOutput value) => value.OutputPath;
+
+    public void Dispose()
     {
-        string tempPath = ResolveTempPath();
+        this.Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    public override string ToString() => this.OutputPath;
+
+    private static TestProjectOutput CreateInTemp(ILogger logger, params string[] paths)
+    {
+        string tempPath = ResolveTempPath(logger);
         string outputPath = Path.Combine(paths.Prepend(tempPath).ToArray());
 
         if (!Path.EndsInDirectorySeparator(outputPath))
@@ -37,28 +54,14 @@ internal sealed class TestProjectOutput : IDisposable
         return new TestProjectOutput(outputPath);
     }
 
-    public static implicit operator string(TestProjectOutput value) => value.OutputPath;
-
-    public void Dispose()
+    [SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates")]
+    private static string ResolveTempPath(ILogger logger)
     {
-        this.Dispose(true);
-        GC.SuppressFinalize(this);
-    }
+        // The Path.GetTempPath is problematic on macOS machines as it can returns values that are hard to resolve and
+        // compare to later. We use the RUNNER_TEMP environment variable when available to get a more reliable temp path.
+        string tempPath = Environment.GetEnvironmentVariable("RUNNER_TEMP") ?? Path.GetTempPath();
 
-    public override string ToString() => this.OutputPath;
-
-    private static string ResolveTempPath()
-    {
-        string tempPath = Path.GetTempPath();
-
-        if (OperatingSystem.IsMacOS())
-        {
-            // macOS can sometimes use an environment variable that maps to a
-            // symlink. This prevents us from getting the full path that is
-            // actually used later in msbuild. We need to resolve the full
-            // path so that our tests can compare apples to apples.
-            tempPath = Mono.Unix.UnixPath.GetCompleteRealPath(tempPath);
-        }
+        logger.LogInformation("Temp path: {TempPath}", tempPath);
 
         return tempPath;
     }
