@@ -13,7 +13,7 @@
     https://learn.microsoft.com/nuget/consume-packages/central-package-management#global-package-references
     -->
   <ItemGroup>
-    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.6.143" />
+    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.6.146" />
     <GlobalPackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="1.0.0" />
   </ItemGroup>
 
