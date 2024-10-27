@@ -80,8 +80,8 @@ look like the following:
 ```text
 /__intermediate/src/MyClassLibrary/*
 /__intermediate/src/MyClassLibrary.Tests/*
-/__output/Debug/AnyCPU/src/MyClassLibrary/net6.0/*
-/__output/Debug/AnyCPU/src/MyClassLibrary.Tests/net6.0/*
+/__output/Debug/AnyCPU/src/MyClassLibrary/net8.0/*
+/__output/Debug/AnyCPU/src/MyClassLibrary.Tests/net8.0/*
 /__packages/NuGet/Debug/*
 /__publish/Debug/AnyCPU/src/MyClassLibrary/*
 /__test-results/src/MyClassLibrary.Tests/*
@@ -110,8 +110,8 @@ This would result in the following build output:
 ```text
 /__intermediate/MyClassLibrary/*
 /__intermediate/MyClassLibrary.Tests/*
-/__output/Debug/AnyCPU/MyClassLibrary/net6.0/*
-/__output/Debug/AnyCPU/MyClassLibrary.Tests/net6.0/*
+/__output/Debug/AnyCPU/MyClassLibrary/net8.0/*
+/__output/Debug/AnyCPU/MyClassLibrary.Tests/net8.0/*
 /__packages/NuGet/Debug/*
 /__publish/Debug/AnyCPU/MyClassLibrary/*
 /__test-results/MyClassLibrary.Tests/*

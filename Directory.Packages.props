@@ -6,6 +6,12 @@
     -->
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+
+    <!--
+      Enable transitive pinning
+      https://learn.microsoft.com/nuget/consume-packages/central-package-management#transitive-pinning
+      -->
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
 
   <!--
@@ -23,6 +29,8 @@
     <PackageVersion Include="MSBuild.ProjectCreation"                           Version="12.0.1" />
     <PackageVersion Include="Neovolve.Logging.Xunit"                            Version="6.1.0" />
     <PackageVersion Include="Shouldly"                                          Version="4.2.1" />
+    <!-- Transitively pinned for newer version for Neovolve.Logging.Xunit. -->
+    <PackageVersion Include="System.Text.Json"                                  Version="9.0.0-rc.2.24473.5" />
     <PackageVersion Include="xunit"                                             Version="2.9.2" />
     <PackageVersion Include="xunit.runner.visualstudio"                         Version="2.8.2" />
   </ItemGroup>

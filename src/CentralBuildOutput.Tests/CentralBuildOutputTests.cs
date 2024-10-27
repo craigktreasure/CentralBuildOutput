@@ -206,7 +206,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
     ///     src/MyClassLibrary/MyClassLibrary.csproj
     /// </summary>
     [Fact]
-    public void DefaultConfigurationWithMultiTargetting()
+    public void DefaultConfigurationWithMultiTargeting()
     {
         // Arrange
         this.SetupDirectoryBuildProps();
@@ -215,7 +215,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         ProjectCreator project = this.CreateSaveAndBuildProject(() => ProjectCreator.Templates
             .SdkCsproj(
                 path: "src/MyClassLibrary/MyClassLibrary.csproj",
-                targetFrameworks: ["netstandard1.6", "netstandard2.0", "netstandard2.1"]));
+                targetFrameworks: ["netstandard2.0", "netstandard2.1"]));
 
         // Assert
         Properties properties = Properties.Load(project);
@@ -223,10 +223,8 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         CommonMSBuildProperties msbuildProps = properties.MSBuildCommon;
         msbuildProps.OutputPath.MakeRelative(this.ProjectOutput).ShouldBe("__output/Debug/AnyCPU/src/MyClassLibrary/");
 
-        File.Exists("__output/Debug/AnyCPU/src/MyClassLibrary/netstandard1.6/MyClassLibrary.dll").ShouldBeTrue();
         File.Exists("__output/Debug/AnyCPU/src/MyClassLibrary/netstandard2.0/MyClassLibrary.dll").ShouldBeTrue();
         File.Exists("__output/Debug/AnyCPU/src/MyClassLibrary/netstandard2.1/MyClassLibrary.dll").ShouldBeTrue();
-        Directory.Exists("__intermediate/src/MyClassLibrary/Debug/netstandard1.6").ShouldBeTrue();
         Directory.Exists("__intermediate/src/MyClassLibrary/Debug/netstandard2.0").ShouldBeTrue();
         Directory.Exists("__intermediate/src/MyClassLibrary/Debug/netstandard2.1").ShouldBeTrue();
     }
@@ -353,7 +351,7 @@ public class CentralBuildOutputTests : MSBuildSdkTestBase
         // Act
         ProjectCreator project = this.CreateSaveAndBuildProject(() => ProjectCreator.Templates.SdkCsproj(
             path: "src/MyCMakeLibrary/MyCMakeLibrary.proj",
-            sdk: "Microsoft.Build.NoTargets/3.5.6"));
+            sdk: "Microsoft.Build.NoTargets/3.7.56"));
 
         // Assert
         Properties properties = Properties.Load(project);
