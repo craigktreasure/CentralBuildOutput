@@ -8,7 +8,6 @@ using Treasure.Build.CentralBuildOutput.Tests.Extensions;
 using Treasure.Build.CentralBuildOutput.Tests.MSBuild;
 
 using Xunit;
-using Xunit.Abstractions;
 
 public class CentralBuildOutputTests : MSBuildSdkTestBase
 {
