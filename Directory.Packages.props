@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
 
   <!--
     Enable and configure Central Package Manager (CPM)
@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <!--
-    Global pacakge references
+    Global package references
     https://learn.microsoft.com/nuget/consume-packages/central-package-management#global-package-references
     -->
   <ItemGroup>
