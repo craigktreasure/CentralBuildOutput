@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 using Treasure.Build.CentralBuildOutput.Tests.Extensions;
 
-using Xunit.Abstractions;
+using Xunit;
 
 internal sealed class TestProjectOutput : IDisposable
 {
