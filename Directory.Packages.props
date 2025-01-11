@@ -29,8 +29,8 @@
     <PackageVersion Include="MSBuild.ProjectCreation"                           Version="14.0.5" />
     <PackageVersion Include="Neovolve.Logging.Xunit"                            Version="6.3.0" />
     <PackageVersion Include="Shouldly"                                          Version="4.2.1" />
-    <PackageVersion Include="xunit"                                             Version="2.9.2" />
-    <PackageVersion Include="xunit.runner.visualstudio"                         Version="3.0.0" />
+    <PackageVersion Include="xunit"                                             Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio"                         Version="3.0.1" />
   </ItemGroup>
 
 </Project>
