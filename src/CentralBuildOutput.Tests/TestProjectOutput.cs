@@ -42,7 +42,7 @@ internal sealed class TestProjectOutput : IDisposable
     private static TestProjectOutput CreateInTemp(ILogger logger, params string[] paths)
     {
         string tempPath = ResolveTempPath(logger);
-        string outputPath = Path.Combine(paths.Prepend(tempPath).ToArray());
+        string outputPath = Path.Combine([.. paths.Prepend(tempPath)]);
 
         if (!Path.EndsInDirectorySeparator(outputPath))
         {
