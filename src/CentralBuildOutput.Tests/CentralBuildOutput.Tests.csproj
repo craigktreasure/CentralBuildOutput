@@ -5,6 +5,7 @@
     <IsPackable>false</IsPackable>
     <AssemblyName>Treasure.Build.CentralBuildOutput.Tests</AssemblyName>
     <RootNamespace>Treasure.Build.CentralBuildOutput.Tests</RootNamespace>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -19,13 +20,17 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="MSBuild.ProjectCreation" />
-    <PackageReference Include="Neovolve.Logging.Xunit" />
+    <PackageReference Include="Neovolve.Logging.Xunit.v3" />
     <PackageReference Include="Shouldly" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="xunit.v3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,18 +38,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\CentralBuildOutput\Sdk\*" Link="Sdk\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\CentralBuildOutput\Sdk\*" Link="Sdk\%(Filename)%(Extension)"
+      CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!--
-    A hack to use the .NET SDKs version of NuGet.Frameworks.dll, since it has a newer version than what is publicly available.
+    A hack to use the .NET SDKs version of NuGet.Frameworks.dll, since it has a newer version than what
+  is publicly available.
 
     This is not applicable when building from within Visual Studio.
   -->
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent"
+    Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">
     <Copy SourceFiles="$(MSBuildSDKsPath)\..\NuGet.Frameworks.dll"
-          DestinationFolder="$(OutputPath)"
-          ContinueOnError="false" />
+      DestinationFolder="$(OutputPath)"
+      ContinueOnError="false" />
   </Target>
 
 </Project>
