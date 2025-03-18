@@ -2,7 +2,7 @@
 
 using Microsoft.Build.Utilities.ProjectCreation;
 
-using Xunit.Abstractions;
+using Xunit;
 
 public abstract class MSBuildSdkTestBase : MSBuildTestBase, IDisposable
 {
