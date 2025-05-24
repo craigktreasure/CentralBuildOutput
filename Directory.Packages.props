@@ -25,7 +25,7 @@
 
   <ItemGroup>
     <PackageVersion Include="IsExternalInit"                                    Version="1.0.3" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk"                            Version="17.13.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk"                            Version="17.14.0" />
     <PackageVersion Include="MSBuild.ProjectCreation"                           Version="14.0.5" />
     <PackageVersion Include="Neovolve.Logging.Xunit"                            Version="6.3.0" />
     <PackageVersion Include="Shouldly"                                          Version="4.3.0" />
