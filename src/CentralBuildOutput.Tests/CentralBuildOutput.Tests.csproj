@@ -42,9 +42,7 @@
     This is not applicable when building from within Visual Studio.
   -->
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">
-    <Copy SourceFiles="$(MSBuildSDKsPath)\..\NuGet.Frameworks.dll"
-          DestinationFolder="$(OutputPath)"
-          ContinueOnError="false" />
+    <Copy SourceFiles="$(MSBuildSDKsPath)\..\NuGet.Frameworks.dll" DestinationFolder="$(OutputPath)" ContinueOnError="false" />
   </Target>
 
 </Project>

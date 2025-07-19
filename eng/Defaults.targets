@@ -1,8 +1,7 @@
 <Project>
 
   <ItemGroup Condition="'$(IsTestProject)' == 'true'">
-    <Content Include="$(RepoRootPath)xunit.runner.json"
-             CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(RepoRootPath)xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
