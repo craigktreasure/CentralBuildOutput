@@ -55,13 +55,13 @@ jobs:
         run: dotnet test --configuration Release --no-build --verbosity normal
 
       - name: Upload output artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: output_${{ inputs.artifactSuffix }}
           path: __artifacts/bin
 
       - name: Upload package artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: packages_${{ inputs.artifactSuffix }}
           path: __artifacts/package
