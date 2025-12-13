@@ -22,7 +22,7 @@ jobs:
           nuget-version: latest
 
       - name: Download packages artifact
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: packages_ubuntu
           path: __artifacts/package
